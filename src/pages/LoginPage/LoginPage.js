@@ -1,16 +1,25 @@
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import Banner from "../../components/Banner";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import authServices from "../../services/authServices";
+import AuthContext from "../../context/auth.context";
+import updateSession from "../../utils/updateSession";
 
 export default function SignupPage() {
+  const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+
+  useEffect(() => {
+    if (auth) {
+      navigate("/timeline");
+    }
+  }, []);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -26,6 +35,7 @@ export default function SignupPage() {
     authServices
       .signin(form)
       .then(({ data }) => {
+        updateSession(setAuth, data);
         navigate("/timeline");
       })
       .catch((err) => {

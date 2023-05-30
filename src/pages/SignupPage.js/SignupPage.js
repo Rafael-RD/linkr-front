@@ -1,10 +1,12 @@
 import styled from "styled-components";
 import { Link, useNavigate } from "react-router-dom";
 import Banner from "../../components/Banner";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import authServices from "../../services/authServices";
+import AuthContext from "../../context/auth.context";
 
 export default function SignupPage() {
+  const { auth } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
@@ -13,6 +15,12 @@ export default function SignupPage() {
     username: "",
     image: "",
   });
+
+  useEffect(() => {
+    if (auth) {
+      navigate("/timeline");
+    }
+  }, []);
 
   function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
