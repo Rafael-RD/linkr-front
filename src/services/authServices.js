@@ -6,6 +6,10 @@ function signup(body) {
   return axios.post(`${url}/signup`, body);
 }
 
-const authServices = { signup };
+function signin(body) {
+  return axios.post(`${url}/signin`, body);
+}
+
+const authServices = { signup, signin };
 
 export default authServices;
