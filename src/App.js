@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage.js";
 import styled from "styled-components";
+import SignupPage from "./pages/SignupPage.js/SignupPage.js";
 
 function App() {
   return (
@@ -8,7 +9,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LoginPage />} />
-          <Route path="/register" element={<LoginPage />} />
+          <Route path="/sign-up" element={<SignupPage />} />
           <Route path="/timeline" element={<LoginPage />} />
         </Routes>
       </BrowserRouter>
