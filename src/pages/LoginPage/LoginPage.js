@@ -4,7 +4,7 @@ import Banner from "../../components/Banner";
 import { useState } from "react";
 import authServices from "../../services/authServices";
 
-export default function SignupPage() {
+export default function LoginPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
