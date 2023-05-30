@@ -49,6 +49,9 @@ export default function Header() {
         <div>
           <p onClick={logout}>Logout</p>
         </div>
+        <section>
+          <p onClick={logout}>Logout</p>
+        </section>
       </Holder>
     </>
   );
@@ -114,5 +117,14 @@ const Holder = styled.div`
       color: #ffffff;
       cursor: pointer;
     }
+  }
+  section {
+    position: fixed;
+    background: blue;
+    z-index: -50;
+    right: 0;
+    width: 43px;
+    height: 47px;
+    display: ${(props) => (props.transform === "50%" ? "none" : "flex")};
   }
 `;
