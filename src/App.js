@@ -2,16 +2,19 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import LoginPage from "./pages/LoginPage/LoginPage.js";
 import styled from "styled-components";
 import SignupPage from "./pages/SignupPage.js/SignupPage.js";
+import { AuthProvider } from "./context/auth.context.js";
 
 function App() {
   return (
     <Page>
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/sign-up" element={<SignupPage />} />
-          <Route path="/timeline" element={<LoginPage />} />
-        </Routes>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<LoginPage />} />
+            <Route path="/sign-up" element={<SignupPage />} />
+            <Route path="/timeline" element={<LoginPage />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </Page>
   );
@@ -19,9 +22,7 @@ function App() {
 
 export default App;
 
-const Page = styled.div`
-
-`;
+const Page = styled.div``;
 
 /*
 font-family: 'Lato', sans-serif;
