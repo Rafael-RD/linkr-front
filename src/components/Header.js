@@ -93,7 +93,7 @@ const Holder = styled.div`
   height: 72px;
   position: relative;
   div {
-    position: absolute;
+    position: fixed;
     right: 0;
     width: 133px;
     height: 47px;
@@ -112,6 +112,7 @@ const Holder = styled.div`
       line-height: 20px;
       letter-spacing: 0.05em;
       color: #ffffff;
+      cursor: pointer;
     }
   }
 `;
