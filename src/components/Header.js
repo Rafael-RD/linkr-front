@@ -1,14 +1,21 @@
 import styled from "styled-components";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
+import { useContext } from "react";
+import AuthContext from "../context/auth.context";
 
 export default function Header() {
+  const { auth, setAuth } = useContext(AuthContext);
+  
   return (
     <>
       <MyHeader>
         <h1>linkr</h1>
         <div>
           <MdOutlineKeyboardArrowDown color="white" size={32} />
-          <img src="" alt="profile" />
+          <img
+            src={auth.picture}
+            alt="profile"
+          />
         </div>
       </MyHeader>
       <Holder>
