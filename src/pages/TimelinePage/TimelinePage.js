@@ -16,21 +16,19 @@ export default function TimelinePage() {
         tags: ""
       });
 
-    useEffect(() => {
-        if (!auth) {
-            navigate("/");
-        }
-
-        const config = {
-            headers: { Authorization: `Bearer ${auth.token}` }
-        }        
-        axios.get(`${process.env.REACT_APP_API_URL}/user`, config)
-            .then((res) => {
-                setUser(res.data)
-                console.log(res.data)
-            })
-            .catch((err) => alert("Error!!!"))
-    }, []);
+    // useEffect(() => {
+    //     if(auth){
+    //         // const config = {
+    //         //     headers: { Authorization: `Bearer ${auth.token}` }
+    //         // }        
+    //     //     axios.get(`${process.env.REACT_APP_API_URL}/user`, config)
+    //     //         .then((res) => {
+    //     //             setUser(res.data)
+    //     //             console.log(res.data)
+    //     //         })
+    //     //         .catch((err) => alert("Error!!!"))
+    //     // }                
+    // }, []);
 
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -38,13 +36,22 @@ export default function TimelinePage() {
 
     function postLink(e){
         e.preventDefault();
-        alert("form")
+        // alert("form")
         console.log("form", form)
+        const config = {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        } 
+        // alert("form") 
+        axios.post(`${process.env.REACT_APP_API_URL}/post`, form, config)
+                .then((res) => {
+                    console.log(res.data)
+                })
+                .catch((err) => alert(err.mesage))
     }
 
     return(
         <TimeLineContainer>
-            {/* <Header/> */}
+            <Header/>
             <ContentContainer>                
                 <h1>timeline</h1>
                 <PostContent>
@@ -105,9 +112,9 @@ const PostContent = styled.div`
     background-color: white;
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-evenly;
     margin-top: 43px;
-    padding: 10px;
+    padding: 16px;
     /* position: absolute; */
     img{
         width: 50px;
@@ -137,6 +144,7 @@ const PostContent = styled.div`
             font-size: 20px;
             color: #707070;
             line-height: 24px;
+            margin-bottom: 0px;
         }
         input:nth-child(3){
             display: flex;
