@@ -3,6 +3,7 @@ import LoginPage from "./pages/LoginPage/LoginPage.js";
 import styled from "styled-components";
 import SignupPage from "./pages/SignupPage.js/SignupPage.js";
 import { AuthProvider } from "./context/auth.context.js";
+import TimelinePage from "./pages/TimelinePage/TimelinePage.js";
 
 function App() {
   return (
@@ -12,7 +13,7 @@ function App() {
           <Routes>
             <Route path="/" element={<LoginPage />} />
             <Route path="/sign-up" element={<SignupPage />} />
-            <Route path="/timeline" element={<LoginPage />} />
+            <Route path="/timeline" element={<TimelinePage />} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
