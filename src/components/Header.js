@@ -1,12 +1,16 @@
 import styled from "styled-components";
-import { MdOutlineKeyboardArrowDown } from "react-icons/md";
-import { useContext, useEffect } from "react";
+import {
+  MdOutlineKeyboardArrowDown,
+  MdOutlineKeyboardArrowUp,
+} from "react-icons/md";
+import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/auth.context";
 import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const { auth, setAuth } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [anim, setAnim] = useState("50%");
 
   useEffect(() => {
     if (!auth) {
@@ -24,11 +28,24 @@ export default function Header() {
       <MyHeader>
         <h1>linkr</h1>
         <div>
-          <MdOutlineKeyboardArrowDown color="white" size={32} />
+          {anim === "120%" ? (
+            <MdOutlineKeyboardArrowUp
+              color="white"
+              size={32}
+              onClick={() => setAnim("50%")}
+            />
+          ) : (
+            <MdOutlineKeyboardArrowDown
+              color="white"
+              size={32}
+              onClick={() => setAnim("120%")}
+            />
+          )}
+
           <img src={auth?.picture} alt="profile" />
         </div>
       </MyHeader>
-      <Holder>
+      <Holder transform={anim}>
         <div>
           <p onClick={logout}>Logout</p>
         </div>
@@ -80,7 +97,8 @@ const Holder = styled.div`
     right: 0;
     width: 133px;
     height: 47px;
-    transform: translateY(120%);
+    transition: transform 250ms ease-in;
+    transform: ${(props) => `translateY(${props.transform})`};
     background: #171717;
     border-radius: 0px 0px 0px 20px;
     display: flex;
