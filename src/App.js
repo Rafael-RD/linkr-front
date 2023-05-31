@@ -23,7 +23,11 @@ function App() {
 
 export default App;
 
-const Page = styled.div``;
+const Page = styled.div`
+  width: 100vw;
+  min-height: 100vH;
+  background-color: #333333;
+`;
 
 /*
 font-family: 'Lato', sans-serif;

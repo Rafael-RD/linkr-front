@@ -8,27 +8,11 @@ import axios from "axios";
 export default function TimelinePage() {
     const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
-    console.log("token",auth)
-    const [user, setUser] = useState()
+    const [disable, setDisable] = useState(false)
     const [form, setForm] = useState({
-        description: "",
         link: "",
-        tags: ""
+        description: ""
       });
-
-    // useEffect(() => {
-    //     if(auth){
-    //         // const config = {
-    //         //     headers: { Authorization: `Bearer ${auth.token}` }
-    //         // }        
-    //     //     axios.get(`${process.env.REACT_APP_API_URL}/user`, config)
-    //     //         .then((res) => {
-    //     //             setUser(res.data)
-    //     //             console.log(res.data)
-    //     //         })
-    //     //         .catch((err) => alert("Error!!!"))
-    //     // }                
-    // }, []);
 
     function handleChange(e) {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -36,58 +20,68 @@ export default function TimelinePage() {
 
     function postLink(e){
         e.preventDefault();
-        // alert("form")
-        console.log("form", form)
+        setDisable(true)
         const config = {
             headers: { Authorization: `Bearer ${auth.token}` }
         } 
-        // alert("form") 
         axios.post(`${process.env.REACT_APP_API_URL}/post`, form, config)
                 .then((res) => {
+                    setDisable(false)
+                    //Retorna o Id do Post criado!!!
                     console.log(res.data)
+                    setForm({link: "", description: ""})
                 })
-                .catch((err) => alert(err.mesage))
+                .catch((err) => {
+                    alert("Houve um erro ao publicar seu link")
+                    console.log(err.message)
+                    setDisable(false)
+                })
     }
 
     return(
+        <>
+        <Header/>
         <TimeLineContainer>
-            <Header/>
+            
             <ContentContainer>                
                 <h1>timeline</h1>
                 <PostContent>
-                    <img src="https://img.freepik.com/fotos-premium/aviao-decolando-do-aeroporto_37416-74.jpg"
+                    <img src={auth?.picture}
                     alt="Imagem do Usuário"/>
                     <form onSubmit={postLink}>
-                        <input 
-                            placeholder="What are you going to share today?"
-                            name="description"
-                            value={form.description}
-                            onChange={handleChange} />
+                        <p>What are you going to share today?</p>
                         <input 
                             placeholder="http://..."
                             name="link"
                             value={form.link}
+                            disabled={disable}
                             onChange={handleChange} />
-                        <input 
+                        <textarea
                             placeholder="Awesome article about #javascript"
-                            name="tags"
-                            value={form.tags}
+                            name="description"
+                            value={form.description}
+                            disabled={disable}
                             onChange={handleChange} />
-                        <button type="submit">Publish</button>
+                            {disable ? (
+                                <button type="submit" disabled={disable}>Publishing...</button>
+                            ) : (
+                                <button type="submit" disabled={disable}>Publish</button>
+                            )}
                     </form>
                 </PostContent>
 
             </ContentContainer>
         </TimeLineContainer>
+        </>
     )
 }
 
 const TimeLineContainer = styled.div`
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: center;
     align-items: center;
-    height: calc(100vh);
-    background-color: #333333;
+
 `
 
 const ContentContainer = styled.div`
@@ -95,8 +89,7 @@ const ContentContainer = styled.div`
     flex-direction: column;
     width: 611px;
     height: 100%;
-    /* background-color: lightsteelblue; */
-    margin-top: 78px;
+    margin-top: 53px;
     h1{
         font-family: 'Oswald', sans-serif;
         color: white;
@@ -115,18 +108,16 @@ const PostContent = styled.div`
     justify-content: space-evenly;
     margin-top: 43px;
     padding: 16px;
-    /* position: absolute; */
     img{
         width: 50px;
         height: 50px;
         border-radius: 26.5px;
-        /* cursor: pointer; */
     }
     form{
         display: flex;
         flex-direction: column;
         position: relative;
-        input{
+        input, p, textarea{
             width: 503px;
             height: 30px;
             border-radius: 5px;
@@ -138,7 +129,7 @@ const PostContent = styled.div`
             line-height: 18px;
             padding: 10px;
         }
-        input:first-child {
+        p {
             background-color: white;
             height: 40px;
             font-size: 20px;
@@ -146,13 +137,10 @@ const PostContent = styled.div`
             line-height: 24px;
             margin-bottom: 0px;
         }
-        input:nth-child(3){
+        textarea{
             display: flex;
             height: 66px;
-            
-            ::placeholder{
-                position: absolute;
-            }            
+            resize: none;
         }
         button{
             width: 112px;
@@ -168,6 +156,7 @@ const PostContent = styled.div`
             font-size: 14px;
             color: white;
             cursor: pointer;
+
         }       
     }
 `
