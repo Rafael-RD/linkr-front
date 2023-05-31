@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/auth.context";
 import axios from "axios";
+import { Timeline } from "./components/Timeline.js";
 
 export default function TimelinePage() {
     const { auth } = useContext(AuthContext);
@@ -76,7 +77,7 @@ export default function TimelinePage() {
                         <button type="submit">Publish</button>
                     </form>
                 </PostContent>
-
+                <Timeline />
             </ContentContainer>
         </TimeLineContainer>
     )
