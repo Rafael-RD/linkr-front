@@ -17,16 +17,16 @@ export function Post({ postInfo, myUsername }) {
         tag_array
     } = postInfo;
 
-    // useEffect(()=>{
-    //     urlMetadata(link)
-    //         .then(meta=>{
-    //             console.log(meta);
-    //             // setLinkMeta(meta);
-    //         })
-    //         .catch(err=>{
-    //             console.error(err);
-    //         })
-    // },[]);
+    useEffect(()=>{
+        urlMetadata(link)
+            .then(meta=>{
+                console.log(meta);
+                // setLinkMeta(meta);
+            })
+            .catch(err=>{
+                console.log(err);
+            })
+    },[]);
 
     function liked() {
         if (like_users?.includes(myUsername)) {
