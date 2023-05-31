@@ -56,7 +56,7 @@ export default function SignupPage() {
             onChange={handleChange}
             value={form.email}
             disabled={loading}
-            required
+            data-test="email"
           />
           <input
             placeholder="password"
@@ -67,7 +67,7 @@ export default function SignupPage() {
             onChange={handleChange}
             value={form.password}
             disabled={loading}
-            required
+            data-test="password"
           />
           <input
             placeholder="username"
@@ -76,7 +76,7 @@ export default function SignupPage() {
             onChange={handleChange}
             value={form.username}
             disabled={loading}
-            required
+            ata-test="username"
           />
           <input
             placeholder="picture url"
@@ -85,12 +85,14 @@ export default function SignupPage() {
             onChange={handleChange}
             value={form.image}
             disabled={loading}
-            required
+            data-test="picture-url"
           />
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} data-test="sign-up-btn">
             Sign Up
           </button>
-          <Link to="/">Switch back to log in</Link>
+          <Link to="/" data-test="login-link">
+            Switch back to log in
+          </Link>
         </form>
       </section>
     </SignupStyle>
