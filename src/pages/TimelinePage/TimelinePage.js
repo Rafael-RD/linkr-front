@@ -27,6 +27,8 @@ export default function TimelinePage() {
         axios.post(`${process.env.REACT_APP_API_URL}/post`, form, config)
                 .then((res) => {
                     setDisable(false)
+                    //Retorna o Id do Post criado!!!
+                    console.log(res.data)
                     setForm({link: "", description: ""})
                 })
                 .catch((err) => {
@@ -44,7 +46,7 @@ export default function TimelinePage() {
             <ContentContainer>                
                 <h1>timeline</h1>
                 <PostContent>
-                    <img src={auth.picture}
+                    <img src={auth?.picture}
                     alt="Imagem do Usuário"/>
                     <form onSubmit={postLink}>
                         <p>What are you going to share today?</p>
