@@ -37,12 +37,14 @@ export default function TimelinePage() {
     }
 
     return(
+        <>
+        <Header/>
         <TimeLineContainer>
-            <Header/>
+            
             <ContentContainer>                
                 <h1>timeline</h1>
                 <PostContent>
-                    <img src="https://img.freepik.com/fotos-premium/aviao-decolando-do-aeroporto_37416-74.jpg"
+                    <img src={auth.picture}
                     alt="Imagem do Usuário"/>
                     <form onSubmit={postLink}>
                         <p>What are you going to share today?</p>
@@ -68,17 +70,16 @@ export default function TimelinePage() {
 
             </ContentContainer>
         </TimeLineContainer>
+        </>
     )
 }
 
 const TimeLineContainer = styled.div`
     display: flex;
-    flex-direction: column;
-    /* justify-content: center; */
-    /* margin-top: 72px; */
+    flex-direction: row;
+    justify-content: center;
     align-items: center;
-    height: calc(100vh);
-    background-color: #333333;
+
 `
 
 const ContentContainer = styled.div`
@@ -86,8 +87,7 @@ const ContentContainer = styled.div`
     flex-direction: column;
     width: 611px;
     height: 100%;
-    margin-top: 78px;
-    background-color: lightblue;
+    margin-top: 53px;
     h1{
         font-family: 'Oswald', sans-serif;
         color: white;
@@ -106,12 +106,10 @@ const PostContent = styled.div`
     justify-content: space-evenly;
     margin-top: 43px;
     padding: 16px;
-    /* position: absolute; */
     img{
         width: 50px;
         height: 50px;
         border-radius: 26.5px;
-        /* cursor: pointer; */
     }
     form{
         display: flex;
