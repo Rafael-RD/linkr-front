@@ -44,8 +44,8 @@ const TrendingListStyle = styled.div`
   background: #171717;
   width: 301px;
   border-radius: 16px;
-  margin-top: calc(53px + 43px + 40px);
-  margin-left: 38px;
+  /* margin-top: calc(53px + 43px + 40px); */
+  /* margin-left: 38px; */
   position: sticky;
   height: 100%;
   top: calc(53px + 43px + 40px);
