@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
+import urlMetadata from "url-metadata";
+import { useEffect, useState } from "react";
 
 export function Post({ postInfo, myUsername }) {
+    const [linkMeta, setLinkMeta]=useState({});
     const {
         description,
         link,
@@ -13,6 +16,17 @@ export function Post({ postInfo, myUsername }) {
         like_users,
         tag_array
     } = postInfo;
+
+    // useEffect(()=>{
+    //     urlMetadata(link)
+    //         .then(meta=>{
+    //             console.log(meta);
+    //             // setLinkMeta(meta);
+    //         })
+    //         .catch(err=>{
+    //             console.error(err);
+    //         })
+    // },[]);
 
     function liked() {
         if (like_users?.includes(myUsername)) {
