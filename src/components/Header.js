@@ -27,28 +27,34 @@ export default function Header() {
     <>
       <MyHeader>
         <h1>linkr</h1>
-        <div>
+        <div
+          onClick={() => (anim === "120%" ? setAnim("50%") : setAnim("120%"))}
+        >
           {anim === "120%" ? (
-            <MdOutlineKeyboardArrowUp
-              color="white"
-              size={32}
-              onClick={() => setAnim("50%")}
-            />
+            <MdOutlineKeyboardArrowUp color="white" size={32} />
           ) : (
-            <MdOutlineKeyboardArrowDown
-              color="white"
-              size={32}
-              onClick={() => setAnim("120%")}
-            />
+            <MdOutlineKeyboardArrowDown color="white" size={32} />
           )}
 
-          <img src={auth?.picture} alt="profile" />
+          <img
+            src={auth?.picture}
+            alt="profile"
+            data-test="avatar"
+            onError={(e) =>
+              (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)
+            }
+          />
         </div>
       </MyHeader>
       <Holder transform={anim}>
         <div>
           <p onClick={logout}>Logout</p>
         </div>
+        <section data-test="menu">
+          <p onClick={logout} data-test="logout">
+            Logout
+          </p>
+        </section>
       </Holder>
     </>
   );
@@ -93,7 +99,7 @@ const Holder = styled.div`
   height: 72px;
   position: relative;
   div {
-    position: absolute;
+    position: fixed;
     right: 0;
     width: 133px;
     height: 47px;
@@ -112,6 +118,15 @@ const Holder = styled.div`
       line-height: 20px;
       letter-spacing: 0.05em;
       color: #ffffff;
+      cursor: pointer;
     }
+  }
+  section {
+    position: fixed;
+    z-index: -50;
+    right: 0;
+    width: 43px;
+    height: 47px;
+    display: ${(props) => (props.transform === "50%" ? "none" : "flex")};
   }
 `;

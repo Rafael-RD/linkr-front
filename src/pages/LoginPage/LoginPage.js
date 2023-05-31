@@ -57,7 +57,7 @@ export default function LoginPage() {
             onChange={handleChange}
             value={form.email}
             disabled={loading}
-            required
+            data-test="email"
           />
           <input
             placeholder="password"
@@ -68,12 +68,14 @@ export default function LoginPage() {
             onChange={handleChange}
             value={form.password}
             disabled={loading}
-            required
+            data-test="password"
           />
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} data-test="login-btn">
             Log In
           </button>
-          <Link to="/sign-up">First time? Create an account!</Link>
+          <Link to="/sign-up" data-test="sign-up-link">
+            First time? Create an account!
+          </Link>
         </form>
       </section>
     </SignupStyle>
