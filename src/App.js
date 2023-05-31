@@ -4,6 +4,7 @@ import styled from "styled-components";
 import SignupPage from "./pages/SignupPage.js/SignupPage.js";
 import { AuthProvider } from "./context/auth.context.js";
 import TimelinePage from "./pages/TimelinePage/TimelinePage.js";
+import HashtagPage from "./pages/HashtagPage/HashtagPage.js";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
             <Route path="/" element={<LoginPage />} />
             <Route path="/sign-up" element={<SignupPage />} />
             <Route path="/timeline" element={<TimelinePage />} />
+            <Route path="/hashtag/:hashtag" element={<HashtagPage/>} />
           </Routes>
         </AuthProvider>
       </BrowserRouter>

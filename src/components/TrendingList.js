@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AuthContext from "../context/auth.context";
 import tagsServices from "../services/tagsServices";
@@ -22,45 +23,18 @@ export default function TrendingList() {
     <TrendingListStyle>
       <h4>trending</h4>
       <ul>
-        {!tags.length ? (
+        {!tags.length && (
           <LoadingStyle>
             Loading
-            <ThreeDots height={6} width="auto" color="white"/>
+            <ThreeDots height={6} width="auto" color="white" />
           </LoadingStyle>
-        ) : (
-          <>
-            <li>
-              <span># oi</span>
-            </li>
-            <li># oi</li>
-            <li>
-              <span>
-                # oioioioioioioioioioioioioioioioioioioioioioioioioioi
-              </span>
-            </li>
-            <li>
-              <span># oi</span>
-            </li>
-            <li>
-              <span># oi</span>
-            </li>
-            <li>
-              <span># oi</span>
-            </li>
-            <li>
-              <span># oi</span>
-            </li>
-            <li>
-              <span># oi</span>
-            </li>
-            <li>
-              <span># oi</span>
-            </li>
-            <li>
-              <span># oi</span>
-            </li>
-          </>
         )}
+
+        {tags.map((t) => (
+          <li>
+            <Link to={`/hashtag/${t.name}`}># {t.name}</Link>
+          </li>
+        ))}
       </ul>
     </TrendingListStyle>
   );
@@ -70,7 +44,11 @@ const TrendingListStyle = styled.div`
   background: #171717;
   width: 301px;
   border-radius: 16px;
-
+  margin-top: calc(53px + 43px + 40px);
+  margin-left: 38px;
+  position: sticky;
+  height: 100%;
+  top: calc(53px + 43px + 40px);
   h4 {
     padding: 9px 16px 12px;
     font-family: "Oswald", sans-serif;
@@ -94,9 +72,11 @@ const TrendingListStyle = styled.div`
     font-size: 19px;
     line-height: 23px;
     letter-spacing: 0.05em;
-    color: #ffffff;
+
     li {
-      span {
+      a {
+        text-decoration: none;
+        color: #ffffff;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -111,7 +91,7 @@ const TrendingListStyle = styled.div`
 const LoadingStyle = styled.div`
   display: flex;
   gap: 2px;
-  div{
+  div {
     margin-bottom: 1px;
   }
   svg {
