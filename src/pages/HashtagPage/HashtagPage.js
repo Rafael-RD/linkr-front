@@ -35,7 +35,7 @@ export default function HashtagPage() {
           <h2 data-test="hashtag-title"># {hashtag}</h2>
           <ContentContainer>
             <Listing>
-              {postList.length && (
+              {!postList.length && (
                 <LoadingStyle>
                   Loading
                   <ThreeDots height={6} width={18} color="white" />
