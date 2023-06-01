@@ -5,6 +5,7 @@ import { TiPencil } from "react-icons/ti";
 export function Post({ postInfo, myUsername }) {
     /* eslint-disable */
     const {
+        id,
         description,
         link,
         createdAt,
@@ -46,7 +47,7 @@ export function Post({ postInfo, myUsername }) {
             <ContentContainer>
                 <NameConfigPost>
                     <span>{userName}</span>
-                    <PostConfig>
+                    <PostConfig hide={myUsername===userName}>
                         <TiPencil />
                         <AiFillDelete />
                     </PostConfig>
@@ -138,21 +139,15 @@ const NameConfigPost = styled.div`
         font-weight: 400;
         font-size: 20px;
     }
-
-    div{
-        display: flex;
-        gap: 10px;
-
-        svg{
-            width: 18px;
-            height: 18px;
-        }
-    }
-
 `;
 
 const PostConfig = styled.div`
-    display: flex;
+    display: ${(prop)=>prop.hide?'flex':'none'};
+    gap: 10px;
+    svg{
+        width: 18px;
+        height: 18px;
+    }
 `;
 
 const CardMetadata=styled.div`
@@ -176,6 +171,13 @@ const CardMetadata=styled.div`
             font-family: 'Lato', sans-serif;
             font-size: 16px;
             color: #cecece;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            line-height: 1;
+            max-height: 1 * 3;
         }
         p{
             font-family: 'Lato', sans-serif;
