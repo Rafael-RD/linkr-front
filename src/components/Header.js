@@ -95,7 +95,6 @@ const MyHeader = styled.header`
   }
 `;
 const Holder = styled.div`
-  width: 100vw;
   height: 72px;
   position: relative;
   div {
