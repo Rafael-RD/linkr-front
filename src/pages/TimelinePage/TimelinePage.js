@@ -4,6 +4,7 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/auth.context";
 import axios from "axios";
+import Search from "../../components/Search";
 
 export default function TimelinePage() {
     const { auth } = useContext(AuthContext);
@@ -45,31 +46,33 @@ export default function TimelinePage() {
             
             <ContentContainer>                
                 <h1>timeline</h1>
-                <PostContent>
+                <PostContent data-test="publish-box">
                     <img src={auth?.picture}
                     alt="Imagem do Usuário"/>
                     <form onSubmit={postLink}>
                         <p>What are you going to share today?</p>
-                        <input 
+                        <input
+                            data-test="link" 
                             placeholder="http://..."
                             name="link"
                             value={form.link}
                             disabled={disable}
                             onChange={handleChange} />
                         <textarea
+                            data-test="description"
                             placeholder="Awesome article about #javascript"
                             name="description"
                             value={form.description}
                             disabled={disable}
                             onChange={handleChange} />
                             {disable ? (
-                                <button type="submit" disabled={disable}>Publishing...</button>
+                                <button data-test="publish-btn" type="submit" disabled={disable}>Publishing...</button>
                             ) : (
-                                <button type="submit" disabled={disable}>Publish</button>
+                                <button data-test="publish-btn" type="submit" disabled={disable}>Publish</button>
                             )}
                     </form>
                 </PostContent>
-
+                {/* <Search/> */}
             </ContentContainer>
         </TimeLineContainer>
         </>
@@ -111,7 +114,7 @@ const PostContent = styled.div`
     img{
         width: 50px;
         height: 50px;
-        border-radius: 26.5px;
+        border-radius: 50%;
     }
     form{
         display: flex;

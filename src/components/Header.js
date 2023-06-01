@@ -6,6 +6,7 @@ import {
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/auth.context";
 import { useNavigate } from "react-router-dom";
+import Search from "./Search";
 
 export default function Header() {
   const { auth, setAuth } = useContext(AuthContext);
@@ -27,6 +28,7 @@ export default function Header() {
     <>
       <MyHeader>
         <h1>linkr</h1>
+        <Search/>
         <div
           onClick={() => (anim === "120%" ? setAnim("50%") : setAnim("120%"))}
         >
@@ -46,6 +48,7 @@ export default function Header() {
           />
         </div>
       </MyHeader>
+      
       <Holder transform={anim}>
         <div>
           <p onClick={logout}>Logout</p>
@@ -81,12 +84,12 @@ const MyHeader = styled.header`
     letter-spacing: 0.05em;
     color: #ffffff;
   }
-  div {
+  div:last-child{
     display: flex;
     align-items: center;
     cursor: pointer;
     gap: 15px;
-    img {
+    img:last-child {
       object-fit: cover;
       border-radius: 50%;
       height: 53px;
