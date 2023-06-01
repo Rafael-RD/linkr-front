@@ -26,12 +26,12 @@ export default function TrendingList() {
         {!tags.length && (
           <LoadingStyle>
             Loading
-            <ThreeDots height={6} width="auto" color="white" />
+            <ThreeDots height={6} width={18} color="white" />
           </LoadingStyle>
         )}
 
         {tags.map((t) => (
-          <li>
+          <li key={t.name}>
             <Link to={`/hashtag/${t.name}`}># {t.name}</Link>
           </li>
         ))}
@@ -44,8 +44,6 @@ const TrendingListStyle = styled.div`
   background: #171717;
   width: 301px;
   border-radius: 16px;
-  /* margin-top: calc(53px + 43px + 40px); */
-  /* margin-left: 38px; */
   position: sticky;
   height: 100%;
   top: calc(53px + 43px + 40px);

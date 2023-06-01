@@ -1,48 +1,97 @@
 import styled from "styled-components";
 import Header from "../../components/Header";
 import TrendingList from "../../components/TrendingList";
-import { AiOutlineHeart } from "react-icons/ai";
-import { Link } from "react-router-dom";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import { Link, NavLink, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import AuthContext from "../../context/auth.context";
+import tagsServices from "../../services/tagsServices";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function HashtagPage() {
+  const { auth } = useContext(AuthContext);
+  const { hashtag } = useParams();
+  const [postList, setPostList] = useState([]);
+
+  useEffect(() => {
+    if (auth) {
+      setPostList([]);
+      tagsServices
+        .getTagPostList(auth.token, hashtag)
+        .then(({ data }) => {
+          setPostList(data);
+        })
+        .catch((err) => {
+          alert(`Error ${err.response.status}: ${err.response.data}`);
+        });
+    }
+  }, [hashtag]);
+
   return (
     <>
       <Header />
       <PageStyle>
         <Wrapper>
-          <h2># react</h2>
+          <h2 data-test="hashtag-title"># {hashtag}</h2>
           <ContentContainer>
             <Listing>
-              <li>
-                <ItemNav>
-                  <img src="https://m.media-amazon.com/images/I/511A7gqNwgL._AC_UF894,1000_QL80_.jpg" />
-                  <LikeInfo>
-                    <AiOutlineHeart />
-                    <p>13 likes</p>
-                  </LikeInfo>
-                </ItemNav>
-                <PostInfo>
-                  <h6>Juvenal Juvêncio</h6>
-                  <p>
-                    Muito maneiro esse tutorial de Material UI com React, deem
-                    uma olhada! #react #material
-                  </p>
-                  <MetaDataContainer>
-                    <div>
-                      <h4>Como aplicar o Material UI em um projeto React</h4>
-                      <p>
-                        Hey! I have moved this tutorial to my personal blog.
-                        Same content, new location. Sorry about making you click
-                        through to another page.
-                      </p>
-                      <Link>
-                        https://medium.com/@pshrmn/a-simple-react-router
-                      </Link>
-                    </div>
-                    <img src="" />
-                  </MetaDataContainer>
-                </PostInfo>
-              </li>
+              {postList.length && (
+                <LoadingStyle>
+                  Loading
+                  <ThreeDots height={6} width={18} color="white" />
+                </LoadingStyle>
+              )}
+              {postList.map((p) => (
+                <li key={p.id} data-test="post">
+                  <ItemNav>
+                    <img src={p.picture} alt="user-pic" />
+                    <LikeInfo>
+                      {p.hasLiked ? (
+                        <AiFillHeart
+                          color={"red"}
+                          size={20}
+                          data-test="like-btn"
+                        />
+                      ) : (
+                        <AiOutlineHeart
+                          color={"white"}
+                          size={20}
+                          data-test="like-btn"
+                        />
+                      )}
+                      <p data-test="counter">{p.qtt_likes} likes</p>
+                    </LikeInfo>
+                  </ItemNav>
+                  <PostInfo>
+                    <h6 data-test="username">{p.userName}</h6>
+                    {FilterTags(p.description)}
+                    <Link to={p.link} target="_blank" data-test="link">
+                      <MetaDataContainer>
+                        <div>
+                          <h4>
+                            {p.linkMetadata?.myTitle ||
+                              "Não foi possivel obter informações do link"}
+                          </h4>
+                          <p>{p.linkMetadata?.description || ""}</p>
+                          <span>{p.link}</span>
+                        </div>
+                        <section>
+                          <img
+                            src={
+                              !p.linkMetadata
+                                ? "https://thumbs.dreamstime.com/b/website-under-construction-internet-error-page-not-found-webpage-maintenance-error-page-not-found-message-technical-website-under-143040659.jpg"
+                                : p.linkMetadata.image
+                                ? `${p.link}${p.linkMetadata?.image}`
+                                : p.linkMetadata["og:image"]
+                            }
+                            alt="link-display"
+                          />
+                        </section>
+                      </MetaDataContainer>
+                    </Link>
+                  </PostInfo>
+                </li>
+              ))}
             </Listing>
             <TrendingList />
           </ContentContainer>
@@ -52,12 +101,51 @@ export default function HashtagPage() {
   );
 }
 
+function FilterTags(description) {
+  const fragments = description.split(" ");
+  const filteredArr = [];
+  let aux = "";
+  fragments.forEach((f, index) => {
+    if (f.includes("#")) {
+      if (aux) {
+        filteredArr.push(aux);
+        aux = "";
+      }
+      const value = index === fragments.length - 1 ? f : `${f} `;
+      filteredArr.push(value);
+    } else {
+      aux += `${f} `;
+    }
+  });
+
+  return (
+    <p data-test="description">
+      {filteredArr.map((fragment, index) => {
+        if (fragment.includes("#")) {
+          const hashtag = fragment.substring(1);
+          return (
+            <NavLink key={index} to={`/hashtag/${hashtag}`}>
+              {fragment}
+            </NavLink>
+          );
+        } else {
+          return <React.Fragment key={index}>{fragment}</React.Fragment>;
+        }
+      })}
+    </p>
+  );
+}
+
 const PageStyle = styled.main`
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   color: white;
+  padding-bottom: 80px;
+  a {
+    text-decoration: none;
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -71,7 +159,9 @@ const Listing = styled.ul`
   gap: 16px;
   li {
     width: 611px;
+    min-height: 276px;
     height: 276px;
+    max-height: 276px;
     background: #171717;
     border-radius: 16px;
     display: flex;
@@ -99,6 +189,7 @@ const Wrapper = styled.div`
     width: 100%;
   }
 `;
+
 const LikeInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -122,8 +213,9 @@ const ItemNav = styled.div`
   align-items: center;
   gap: 19px;
   img {
+    min-width: 50px;
     width: 50px;
-    height: 50px;
+    min-height: 50px;
     border-radius: 50%;
     object-fit: cover;
     cursor: pointer;
@@ -136,7 +228,9 @@ const ItemNav = styled.div`
 const PostInfo = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   gap: 7px;
+  width: 100%;
   h6 {
     font-size: 19px;
     line-height: 23px;
@@ -145,7 +239,12 @@ const PostInfo = styled.div`
   p {
     font-size: 17px;
     line-height: 20px;
+    font-weight: 400;
     color: #b7b7b7;
+    a {
+      font-weight: 700;
+      color: white;
+    }
   }
 `;
 
@@ -153,7 +252,9 @@ const MetaDataContainer = styled.div`
   border: 1px solid #4d4d4d;
   border-radius: 11px;
   display: flex;
+  justify-content: space-between;
   margin-top: 8px;
+  height: 155px;
   div {
     display: flex;
     flex-direction: column;
@@ -165,25 +266,72 @@ const MetaDataContainer = styled.div`
       font-size: 16px;
       line-height: 19px;
       color: #cecece;
+      min-height: 19px;
+      max-height: 38px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     p {
+      margin-top: 5px;
       font-style: normal;
       font-weight: 400;
       font-size: 11px;
       line-height: 13px;
       color: #9b9595;
+      min-height: 13px;
+      max-height: 52px;
+      display: -webkit-box;
+      -webkit-line-clamp: 4;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    a {
+    span {
       font-style: normal;
       font-weight: 400;
       font-size: 11px;
       line-height: 13px;
-
       color: #cecece;
     }
   }
-  img {
-    min-width: 155px;
-    height: 155px;
+  section {
+    position: relative;
+    min-width: 153px;
+    width: 153px;
+    height: 153px;
+    img {
+      position: absolute;
+      bottom: 49.7%;
+      right: 49.2%;
+      transform: translate(50%, 50%);
+      min-width: 156px;
+      width: 156px;
+      height: 156px;
+      object-fit: cover;
+      border-radius: 0px 12px 13px 0px;
+    }
+  }
+`;
+
+const LoadingStyle = styled.div`
+  display: flex;
+  gap: 2px;
+  width: 611px;
+  justify-content: center;
+  font-family: "Lato", sans-serif;
+  font-style: normal;
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 23px;
+  letter-spacing: 0.05em;
+  div {
+    margin-bottom: 1px;
+  }
+  svg {
+    align-self: end;
+    justify-self: end;
   }
 `;
