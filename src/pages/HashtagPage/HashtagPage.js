@@ -44,7 +44,13 @@ export default function HashtagPage() {
               {postList.map((p) => (
                 <li key={p.id} data-test="post">
                   <ItemNav>
-                    <img src={p.picture} alt="user-pic" />
+                    <img
+                      src={p.picture}
+                      alt="user-pic"
+                      onError={(e) =>
+                        (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)
+                      }
+                    />
                     <LikeInfo>
                       {p.hasLiked ? (
                         <AiFillHeart
@@ -82,9 +88,13 @@ export default function HashtagPage() {
                                 ? "https://thumbs.dreamstime.com/b/website-under-construction-internet-error-page-not-found-webpage-maintenance-error-page-not-found-message-technical-website-under-143040659.jpg"
                                 : p.linkMetadata.image
                                 ? `${p.link}${p.linkMetadata?.image}`
-                                : p.linkMetadata["og:image"]
+                                : p.linkMetadata["og:image"] ||
+                                  p.linkMetadata.myFavIcon
                             }
                             alt="link-display"
+                            onError={(e) =>
+                              (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)
+                            }
                           />
                         </section>
                       </MetaDataContainer>

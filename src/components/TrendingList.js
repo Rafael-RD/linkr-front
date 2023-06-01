@@ -20,7 +20,7 @@ export default function TrendingList() {
   }, []);
 
   return (
-    <TrendingListStyle>
+    <TrendingListStyle data-test="trending">
       <h4>trending</h4>
       <ul>
         {!tags.length && (
@@ -32,7 +32,7 @@ export default function TrendingList() {
 
         {tags.map((t) => (
           <li key={t.name}>
-            <Link to={`/hashtag/${t.name}`}># {t.name}</Link>
+            <Link to={`/hashtag/${t.name}`} data-test="hashtag"># {t.name}</Link>
           </li>
         ))}
       </ul>
