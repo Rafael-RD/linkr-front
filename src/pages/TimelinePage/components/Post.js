@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
+import { Link } from "react-router-dom";
 
 export function Post({ postInfo, myUsername }) {
     /* eslint-disable */
@@ -30,11 +31,11 @@ export function Post({ postInfo, myUsername }) {
         }
     }
 
-    function showLikes(){
-        if(!qtt_likes) return "0";
-        else if(qtt_likes<1000) return qtt_likes;
-        else if(qtt_likes<1000*1000) return Math.floor(qtt_likes/1000) + " mil";
-        else return Math.floor(qtt_likes/(1000*1000)) + " M";
+    function showLikes() {
+        if (!qtt_likes) return "0";
+        else if (qtt_likes < 1000) return qtt_likes;
+        else if (qtt_likes < 1000 * 1000) return Math.floor(qtt_likes / 1000) + " mil";
+        else return Math.floor(qtt_likes / (1000 * 1000)) + " M";
     }
 
     return (
@@ -47,20 +48,28 @@ export function Post({ postInfo, myUsername }) {
             <ContentContainer>
                 <NameConfigPost>
                     <span>{userName}</span>
-                    <PostConfig hide={myUsername===userName}>
+                    <PostConfig hide={myUsername === userName}>
                         <TiPencil />
                         <AiFillDelete />
                     </PostConfig>
                 </NameConfigPost>
                 <p>{description}</p>
-                <CardMetadata>
-                    <div>
-                        <h2>{linkMetadata.myTitle}</h2>
-                        <p>{linkMetadata.description}</p>
-                        <span>{link}</span>
-                    </div>
-                    <img src={linkMetadata["og:image"]} alt="" />
-                </CardMetadata>
+                <Link to={link} target="_blank" data-test="link">
+                    <CardMetadata>
+                        <div>
+                            <h2>{linkMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
+                            <p>{linkMetadata?.description || ""}</p>
+                            <span>{link}</span>
+                        </div>
+                        <img src={!linkMetadata ?
+                            "https://thumbs.dreamstime.com/b/website-under-construction-internet-error-page-not-found-webpage-maintenance-error-page-not-found-message-technical-website-under-143040659.jpg" :
+                            linkMetadata.image ?
+                                `${link}${linkMetadata?.image}` :
+                                linkMetadata["og:image"] || linkMetadata.myFavIcon}
+                            onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)}
+                            alt="link" />
+                    </CardMetadata>
+                </Link>
             </ContentContainer>
         </PostContainer>
     )
@@ -126,6 +135,10 @@ const ContentContainer = styled.div`
         font-size: 20px;
         color: #FFFFFF;
     }
+
+    a{
+        text-decoration: none;
+    }
 `;
 
 const NameConfigPost = styled.div`
@@ -142,7 +155,7 @@ const NameConfigPost = styled.div`
 `;
 
 const PostConfig = styled.div`
-    display: ${(prop)=>prop.hide?'flex':'none'};
+    display: ${(prop) => prop.hide ? 'flex' : 'none'};
     gap: 10px;
     svg{
         width: 18px;
@@ -150,7 +163,7 @@ const PostConfig = styled.div`
     }
 `;
 
-const CardMetadata=styled.div`
+const CardMetadata = styled.div`
     display: flex;
     border: solid 1px #4D4D4D;
     border-radius: 11px;
