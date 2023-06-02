@@ -2,6 +2,12 @@ import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
 import { Link } from "react-router-dom";
+import { useRef } from "react";
+import { useState } from "react";
+import { useContext } from "react";
+import AuthContext from "../../../context/auth.context.js";
+import axios from "axios";
+import Modal from 'react-modal';
 
 export function Post({ postInfo, myUsername }) {
     /* eslint-disable */
@@ -18,6 +24,12 @@ export function Post({ postInfo, myUsername }) {
         linkMetadata
     } = postInfo;
     /* eslint-enable */
+    const focusEdit = useRef();
+    const [editOn, setEditOn] = useState(false);
+    const [descriptionEdit, setDescriptionEdit] = useState(description);
+    const [modalIsOpen, setIsOpen] = useState(false);
+    const { auth } = useContext(AuthContext);
+    let subtitle;
 
     function liked() {
         if (like_users?.includes(myUsername)) {
@@ -38,22 +50,104 @@ export function Post({ postInfo, myUsername }) {
         else return Math.floor(qtt_likes / (1000 * 1000)) + " M";
     }
 
+    async function editPost() {
+        console.log("Editar Post");
+        if (!editOn) {
+            focusEdit.current.focus()
+            setEditOn(true);
+            console.log(editOn)
+        } else {
+            focusEdit.current.blur();
+            setEditOn(false);
+            setDescriptionEdit(description);
+            console.log(editOn)
+        }
+    }
+
+    async function deletePost() {
+        const config = {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        }
+
+        const objeto = {
+            postId: id
+        }
+        axios.delete(`${process.env.REACT_APP_API_URL}/post`, objeto, config)
+            .then((res) => {
+                console.log(res.data)
+            })
+            .catch((err) => {
+                alert("Houve um erro ao deletar seu post")
+                console.log(err.message)
+            })
+    }
+
+    function handleChange(e) {
+        setDescriptionEdit(e.target.value);
+    }
+
+    async function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            setEditOn(false);
+            pacthPostEdit()
+        }
+    }
+
+
+    function openModal() {
+        setIsOpen(true);
+    }
+
+    function closeModal() {
+        setIsOpen(false);
+    }
+
+    function pacthPostEdit() {
+        const config = {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        }
+
+        const objeto = {
+            description: descriptionEdit,
+            postId: id
+        }
+        axios.patch(`${process.env.REACT_APP_API_URL}/post`, objeto, config)
+            .then((res) => {
+                console.log(res.data)
+            })
+            .catch((err) => {
+                alert("Houve um erro ao editar seu post")
+                console.log(err.message)
+            })
+    }
+
     return (
         <PostContainer>
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+            >
+                <h2 >Are you sure you want
+                    to delete this post?</h2>
+                <button class="back" onClick={closeModal}>No, go back</button>
+                <button class="delete" onClick={() => {closeModal(); deletePost();} }>Yes, delete it</button>
+            </Modal>
             <ImgLike>
                 <img src={picture} alt="profile" />
                 {liked()}
                 <span>{showLikes()} likes</span>
             </ImgLike>
-            <ContentContainer>
+            <ContentContainer edit={editOn}>
                 <NameConfigPost>
                     <span>{userName}</span>
                     <PostConfig hide={myUsername === userName}>
-                        <TiPencil />
-                        <AiFillDelete />
+                        <TiPencil onClick={editPost} />
+                        <AiFillDelete onClick={openModal} />
                     </PostConfig>
                 </NameConfigPost>
-                <p>{description}</p>
+                <textarea ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyPress={handleKeyPress} />
                 <Link to={link} target="_blank" data-test="link">
                     <CardMetadata>
                         <div>
@@ -75,6 +169,20 @@ export function Post({ postInfo, myUsername }) {
     )
 }
 
+const customStyles = {
+    content: {
+        position: "absolute",
+        top: 'calc(50% - 131px)',
+        left: 'calc(50% - 298px)',
+        right: 'auto',
+        bottom: 'auto',
+        width: "597px",
+        height: "262px",
+        background: "#333333",
+        borderRadius: "50px",
+    },
+  };
+
 const PostContainer = styled.div`
     width: 100%;
     height: fit-content;
@@ -86,6 +194,21 @@ const PostContainer = styled.div`
 
     span, p, svg{
         color: white;
+    }
+
+    button{
+        position: absolute;
+        width: 134px;
+        height: 37px;
+        left: 572px;
+        top: 508px;
+        border-radius: 5px;
+    }
+    .back{
+        background: #FFFFFF;
+    }
+    .delete{
+        background: #1877F2;
     }
 `;
 
@@ -120,13 +243,18 @@ const ContentContainer = styled.div`
     flex-direction: column;
     gap: 15px;
 
-    p{
+    textarea{
         width: 100%;
         font-family: 'Lato', sans-serif;
         font-weight: 400;
         font-size: 20px;
         color: #B7B7B7;
+        background-color: ${(prop) => prop.edit ? '#FFFFFF' : 'transparent'};
+        border-radius: 7px;
+        border: none;
         word-wrap: break-word;
+        resize: none;
+        overflow: auto;
     }
 
     span{
