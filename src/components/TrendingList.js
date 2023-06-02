@@ -13,7 +13,6 @@ export default function TrendingList() {
     tagsServices
       .trendingList(auth.token)
       .then(({ data }) => {
-        console.log(data);
         setTags(data);
       })
       .catch((err) => console.log(err));

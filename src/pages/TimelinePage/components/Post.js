@@ -34,7 +34,7 @@ export function Post({ postInfo, myUsername }) {
     function showLikes() {
         if (!qtt_likes) return "0";
         else if (qtt_likes < 1000) return qtt_likes;
-        else if (qtt_likes < 1000 * 1000) return Math.floor(qtt_likes / 1000) + " mil";
+        else if (qtt_likes < 1000 * 1000) return Math.floor(qtt_likes / 1000) + " K";
         else return Math.floor(qtt_likes / (1000 * 1000)) + " M";
     }
 
