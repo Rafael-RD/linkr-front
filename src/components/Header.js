@@ -27,7 +27,7 @@ export default function Header() {
   return (
     <>
       <MyHeader>
-        <h1>linkr</h1>
+        <h1 onClick={()=> navigate("/timeline")}>linkr</h1>
         <Search/>
         <div
           onClick={() => (anim === "120%" ? setAnim("50%") : setAnim("120%"))}
@@ -83,6 +83,7 @@ const MyHeader = styled.header`
     line-height: 54px;
     letter-spacing: 0.05em;
     color: #ffffff;
+    cursor: pointer;
   }
   >div:last-child{
     display: flex;
