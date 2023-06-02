@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import Header from "../../components/Header"
 import { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/auth.context";
 import axios from "axios";
 import { Timeline } from "./components/Timeline.js";
@@ -9,7 +8,6 @@ import TrendingList from "../../components/TrendingList";
 
 export default function TimelinePage() {
     const { auth } = useContext(AuthContext);
-    const navigate = useNavigate();
     const [disable, setDisable] = useState(false)
     const [form, setForm] = useState({
         link: "",
@@ -47,28 +45,30 @@ export default function TimelinePage() {
             <Container>
                 <h1>timeline</h1>
             <Wrapper>
-            <ContentContainer>                
-                <PostContent>
+            <ContentContainer>
+                <PostContent data-test="publish-box">
                     <img src={auth?.picture}
                     alt="Imagem do Usuário"/>
                     <form onSubmit={postLink}>
                         <p>What are you going to share today?</p>
-                        <input 
+                        <input
+                            data-test="link" 
                             placeholder="http://..."
                             name="link"
                             value={form.link}
                             disabled={disable}
                             onChange={handleChange} />
                         <textarea
+                            data-test="description"
                             placeholder="Awesome article about #javascript"
                             name="description"
                             value={form.description}
                             disabled={disable}
                             onChange={handleChange} />
                             {disable ? (
-                                <button type="submit" disabled={disable}>Publishing...</button>
+                                <button data-test="publish-btn" type="submit" disabled={disable}>Publishing...</button>
                             ) : (
-                                <button type="submit" disabled={disable}>Publish</button>
+                                <button data-test="publish-btn" type="submit" disabled={disable}>Publish</button>
                             )}
                     </form>
                 </PostContent>
@@ -125,8 +125,8 @@ const PostContent = styled.div`
     img{
         width: 50px;
         height: 50px;
-        border-radius: 26.5px;
         object-fit: cover;
+        border-radius: 50%;
     }
     form{
         display: flex;
