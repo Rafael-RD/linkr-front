@@ -19,7 +19,7 @@ export default function Search() {
         if (value.length >= 3) {
             axios.post(`${process.env.REACT_APP_API_URL}/searchUsers`, valor, config)
                 .then((res) => {
-                    console.log(res.data.length)
+                    console.log(res.data)
                     if(res.data.length > 0){
                         setSearch(res.data)
                         setBorder("square")
