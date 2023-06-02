@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import Header from "../../components/Header"
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/auth.context";
 import axios from "axios";
+import { Timeline } from "./components/Timeline.js";
 import Search from "../../components/Search";
 
 export default function TimelinePage() {
@@ -72,7 +73,7 @@ export default function TimelinePage() {
                             )}
                     </form>
                 </PostContent>
-                {/* <Search/> */}
+                <Timeline />
             </ContentContainer>
         </TimeLineContainer>
         </>

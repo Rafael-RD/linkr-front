@@ -65,8 +65,8 @@ export default function Search() {
                 <UsersContainer>
                     {search?.map((user) =>
                         <Users data-test="user-search">
-                            <img src={user.picture} />
-                            <p>{user.userName}</p>
+                            <img src={user?.picture} />
+                            <p>{user?.userName}</p>
                         </Users>
                     )}
                 </UsersContainer>) : <></>}
@@ -77,6 +77,7 @@ export default function Search() {
     );
 }
 const TotalContainer = styled.div`
+    font-family: 'Lato', sans-serif;
     width: 50%;
     display: flex;
     flex-direction: column;
@@ -126,7 +127,7 @@ const UsersContainer = styled.div`
     flex-direction: column;
     background-color: #E7E7E7;
     border-radius: 0 0 8px 8px;
-    padding: 6px;
+    padding: 8px 8px 16px 8px;
     gap: 15px;
 `
 const Users = styled.div`

@@ -84,12 +84,12 @@ const MyHeader = styled.header`
     letter-spacing: 0.05em;
     color: #ffffff;
   }
-  div:last-child{
+  >div:last-child{
     display: flex;
     align-items: center;
     cursor: pointer;
     gap: 15px;
-    img:last-child {
+    >img {
       object-fit: cover;
       border-radius: 50%;
       height: 53px;
@@ -98,7 +98,6 @@ const MyHeader = styled.header`
   }
 `;
 const Holder = styled.div`
-  width: 100vw;
   height: 72px;
   position: relative;
   div {
