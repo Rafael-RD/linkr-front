@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/auth.context";
 import axios from "axios";
 import { Timeline } from "./components/Timeline.js";
+import TrendingList from "../../components/TrendingList";
 
 export default function TimelinePage() {
     const { auth } = useContext(AuthContext);
@@ -43,9 +44,10 @@ export default function TimelinePage() {
         <>
         <Header/>
         <TimeLineContainer>
-            
-            <ContentContainer>                
+            <Container>
                 <h1>timeline</h1>
+            <Wrapper>
+            <ContentContainer>                
                 <PostContent>
                     <img src={auth?.picture}
                     alt="Imagem do Usuário"/>
@@ -72,16 +74,28 @@ export default function TimelinePage() {
                 </PostContent>
                 <Timeline />
             </ContentContainer>
+            <TrendingList/>
+            </Wrapper>
+            </Container>
         </TimeLineContainer>
         </>
     )
 }
 
 const TimeLineContainer = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: white;
+  padding-bottom: 80px;
+        h1{
+        font-family: 'Oswald', sans-serif;
+        color: white;
+        font-weight: 700;
+        font-size: 43px;
+        width: 100%;
+        margin-bottom: 43px;
+    }
 
 `
 
@@ -90,12 +104,12 @@ const ContentContainer = styled.div`
     flex-direction: column;
     width: 611px;
     height: 100%;
-    margin-top: 53px;
     h1{
         font-family: 'Oswald', sans-serif;
         color: white;
         font-weight: 700;
         font-size: 43px;
+        width: 100%;
     }
 `
 const PostContent = styled.div`
@@ -107,12 +121,12 @@ const PostContent = styled.div`
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
-    margin-top: 43px;
     padding: 16px;
     img{
         width: 50px;
         height: 50px;
         border-radius: 26.5px;
+        object-fit: cover;
     }
     form{
         display: flex;
@@ -160,4 +174,11 @@ const PostContent = styled.div`
 
         }       
     }
+`
+const Wrapper =styled.div`
+  display: flex;
+  gap: 41px;
+`
+const Container = styled.div`
+    margin-top: 53px;
 `

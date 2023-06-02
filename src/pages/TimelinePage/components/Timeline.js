@@ -13,7 +13,7 @@ export function Timeline() {
     useEffect(() => {
         setLoading(true);
         if (auth) {
-            axios.get(`${process.env.REACT_APP_API_URL}/timeline`, { headers: { Authorization: `Bearer ${auth.token}` } })
+            axios.get(`${process.env.REACT_APP_API_URL}/timeline`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then(resp => {
                     console.log(resp.data);
                     setPosts(resp.data);
@@ -43,7 +43,7 @@ export function Timeline() {
         } else {
             return (
                 <>
-                    {posts.map(e=><Post key={e.id} postInfo={e} myUsername={auth.username} />)}
+                    {posts.map(e=><Post key={e.id} postInfo={e} myUsername={auth?.username} />)}
                 </>
             )
         }
