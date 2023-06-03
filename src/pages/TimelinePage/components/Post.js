@@ -87,15 +87,15 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                 else return likeUsers[0];
 
             case '2':
-                if(userLiked) return `You and ${otherLikes[0]}`;
+                if (userLiked) return `You and ${otherLikes[0]}`;
                 else return `${likeUsers[0]} and ${likeUsers[1]}`;
 
             case '3':
-                if(userLiked) return `You, ${otherLikes[0]} and 1 other`;   
+                if (userLiked) return `You, ${otherLikes[0]} and 1 other`;
                 else return `${likeUsers[0]}, ${likeUsers[1]} and 1 other`;
 
             default:
-                if(userLiked) return `You, ${otherLikes[0]} and ${showLikes(likeCount - 2)} others`;
+                if (userLiked) return `You, ${otherLikes[0]} and ${showLikes(likeCount - 2)} others`;
                 else return `${likeUsers[0]}, ${likeUsers[1]} and ${showLikes(likeCount - 2)} others`;
         }
     }
@@ -116,8 +116,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                         <AiFillDelete data-test="delete-btn" />
                     </PostConfig>
                 </NameConfigPost>
-                <Link data-test="link" to={link} target="_blank" >
                 <HashtagDescription description={description} />
+                <Link data-test="link" to={link} target="_blank" >
                     <CardMetadata>
                         <div>
                             <h2>{linkMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
