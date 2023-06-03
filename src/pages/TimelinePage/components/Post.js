@@ -100,7 +100,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     }
 
     return (
-        <PostContainer>
+        <PostContainer data-test="post" >
             <ImgLike>
                 <img src={picture} alt="profile" />
                 {liked()}
@@ -109,14 +109,14 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
             </ImgLike>
             <ContentContainer>
                 <NameConfigPost>
-                    <span>{userName}</span>
+                    <span data-test="username" >{userName}</span>
                     <PostConfig hide={myUsername === userName}>
-                        <TiPencil />
-                        <AiFillDelete />
+                        <TiPencil data-test="edit-btn" />
+                        <AiFillDelete data-test="delete-btn" />
                     </PostConfig>
                 </NameConfigPost>
                 <p>{description}</p>
-                <Link to={link} target="_blank" data-test="link">
+                <Link data-test="link" to={link} target="_blank" >
                     <CardMetadata>
                         <div>
                             <h2>{linkMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
