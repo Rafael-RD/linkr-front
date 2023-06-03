@@ -162,6 +162,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
         axios.delete(`${process.env.REACT_APP_API_URL}/post/${id}`, config)
             .then((res) => {
+                setReload(true);
             })
             .catch((err) => {
                 alert("Houve um erro ao deletar seu post")

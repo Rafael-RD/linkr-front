@@ -19,7 +19,7 @@ export default function HashtagDescription(props) {
       aux += `${f} `;
     }
   });
-  console.log(fragments)
+  if(aux.length>0) filteredArr.push(aux);
   return (
     <p data-test="description">
       {filteredArr.map((fragment, index) => {
