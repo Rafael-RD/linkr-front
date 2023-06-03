@@ -2,13 +2,14 @@ import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
 import { Link, NavLink } from "react-router-dom";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import axios from "axios";
 import Modal from 'react-modal';
 import { Tooltip } from "react-tooltip";
 import { useContext, useState } from "react";
 import AuthContext from "../context/auth.context.js";
 import HashtagDescription from "./HashtagDescription.js";
+import { getMetadata } from "../utils/metadataRequest.js";
 
 export function Post({ postInfo, myUsername, setReload, disable }) {
     /* eslint-disable */
@@ -34,6 +35,17 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     const { auth } = useContext(AuthContext);
     const [likeCount, setLikeCount] = useState(qtt_likes)
     const [likeUsers, setLikeUsers] = useState(like_users)
+    const [updateMetadata, setUpdateMetadata] = useState(linkMetadata)
+
+    useEffect(()=> {
+        if(!linkMetadata){
+            metadataUpdate()
+        }
+    },[])
+    async function metadataUpdate(){
+        const update = await getMetadata(link)
+        setUpdateMetadata(update)
+    }
 
     function like() {
 
@@ -214,15 +226,15 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                 <Link data-test="link" to={link} target="_blank" >
                     <CardMetadata>
                         <div>
-                            <h2>{linkMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
-                            <p>{linkMetadata?.description || ""}</p>
+                            <h2>{updateMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
+                            <p>{updateMetadata?.description || ""}</p>
                             <span>{link}</span>
                         </div>
-                        <img src={!linkMetadata ?
+                        <img src={!updateMetadata ?
                             "https://thumbs.dreamstime.com/b/website-under-construction-internet-error-page-not-found-webpage-maintenance-error-page-not-found-message-technical-website-under-143040659.jpg" :
-                            linkMetadata.image ?
-                                `${link}${linkMetadata?.image}` :
-                                linkMetadata["og:image"] || linkMetadata.myFavIcon}
+                            updateMetadata.image ?
+                                `${link}${updateMetadata?.image}` :
+                                updateMetadata["og:image"] || updateMetadata.myFavIcon}
                             onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)}
                             alt="link" />
                     </CardMetadata>
