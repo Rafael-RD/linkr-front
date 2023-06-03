@@ -32,15 +32,15 @@ export function Timeline({reload, setReload}) {
     function showTimeline() {
         if (loading) {
             return (
-                <span>Loading</span>
+                <span data-test="message" >Loading</span>
             )
         } else if (error) {
             return (
-                <span>An error occured while trying to fetch the posts, please refresh the page</span>
+                <span data-test="message" >An error occured while trying to fetch the posts, please refresh the page</span>
             )
         } else if (posts.length === 0) {
             return (
-                <span>There are no posts yet</span>
+                <span data-test="message" >There are no posts yet</span>
             )
         } else {
             return (
