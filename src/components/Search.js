@@ -64,7 +64,7 @@ export default function Search() {
                 <UsersContainer>
                     {search?.map((user) =>
                         <Users data-test="user-search">
-                            <img src={user?.picture} />
+                            <img src={user?.picture} alt={user?.userName || 'Username'} />
                             <p>{user?.userName}</p>
                         </Users>
                     )}
