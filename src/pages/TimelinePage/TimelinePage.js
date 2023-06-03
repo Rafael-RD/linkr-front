@@ -9,6 +9,7 @@ import TrendingList from "../../components/TrendingList";
 export default function TimelinePage() {
     const { auth } = useContext(AuthContext);
     const [disable, setDisable] = useState(false)
+    const [reload, setReload] = useState(false)
     const [form, setForm] = useState({
         link: "",
         description: ""
@@ -30,6 +31,7 @@ export default function TimelinePage() {
                     //Retorna o Id do Post criado!!!
                     console.log(res.data)
                     setForm({link: "", description: ""})
+                    setReload(true)
                 })
                 .catch((err) => {
                     alert("Houve um erro ao publicar seu link")
@@ -72,7 +74,7 @@ export default function TimelinePage() {
                             )}
                     </form>
                 </PostContent>
-                <Timeline />
+                <Timeline reload={reload} setReload={setReload}/>
             </ContentContainer>
             <TrendingList/>
             </Wrapper>
@@ -95,6 +97,7 @@ const TimeLineContainer = styled.div`
         font-size: 43px;
         width: 100%;
         margin-bottom: 43px;
+        line-height: 64px;
     }
 
 `

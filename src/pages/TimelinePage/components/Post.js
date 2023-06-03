@@ -3,13 +3,14 @@ import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
-import { useState } from "react";
-import { useContext } from "react";
 import AuthContext from "../../../context/auth.context.js";
 import axios from "axios";
 import Modal from 'react-modal';
+import { Tooltip } from "react-tooltip";
+import { useContext, useState } from "react";
+import HashtagDescription from "../../../components/HashtagDescription.js";
 
-export function Post({ postInfo, myUsername }) {
+export function Post({ postInfo, myUsername, setReload, disable }) {
     /* eslint-disable */
     const {
         id,
@@ -31,37 +32,87 @@ export function Post({ postInfo, myUsername }) {
     const [modalIsOpen, setIsOpen] = useState(false);
     const { auth } = useContext(AuthContext);
     let subtitle;
+    const [likeCount, setLikeCount] = useState(qtt_likes)
+    const [likeUsers, setLikeUsers] = useState(like_users)
 
+    function like() {
+
+        const post = String(postInfo.id)
+        const config = {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        }
+        if (disable) return
+        disable = true
+        axios.post(`${process.env.REACT_APP_API_URL}/likes/${post}`, {}, config)
+            .then((res) => {
+                disable = false
+                let like_users_copy = []
+                if (like_users) {
+                    like_users_copy = [...like_users]
+                }
+                if (res.data[0]?.user_liked && !like_users_copy.includes(myUsername)) {
+                    like_users_copy.push(myUsername)
+                }
+                if (!res.data[0]?.user_liked && like_users_copy.includes(myUsername)) {
+                    like_users_copy = like_users_copy.filter(e => e !== myUsername)
+                }
+                setLikeCount(res.data[0]?.qtt_likes || 0)
+                setLikeUsers(like_users_copy)
+            })
+            .catch((err) => {
+                alert(err.message)
+                disable = false
+            })
+    }
     function liked() {
-        if (like_users?.includes(myUsername)) {
+        if (likeUsers?.includes(myUsername)) {
             return (
-                <AiFillHeart />
+                <AiFillHeart data-test="like-btn" color="red" onClick={!disable ? (like) : null} />
             )
         } else {
             return (
-                <AiOutlineHeart />
+                <AiOutlineHeart data-test="like-btn" disabled={disable} onClick={!disable ? (like) : null} />
             )
         }
     }
 
-    function showLikes() {
-        if (!qtt_likes) return "0";
-        else if (qtt_likes < 1000) return qtt_likes;
-        else if (qtt_likes < 1000 * 1000) return Math.floor(qtt_likes / 1000) + " K";
-        else return Math.floor(qtt_likes / (1000 * 1000)) + " M";
+    function showLikes(likes) {
+        if (!likes) return "0";
+        else if (likes < 1000) return likes;
+        else if (likes < 1000 * 1000) return Math.floor(likes / 1000) + " K";
+        else return Math.floor(likes / (1000 * 1000)) + " M";
+    }
+
+    function tooltipContent() {
+        if (!likeCount) return null;
+        const userLiked = likeUsers?.includes(myUsername);
+        const otherLikes = [...likeUsers];
+        otherLikes?.splice(likeUsers.indexOf(myUsername), 1);
+        switch (likeCount) {
+            case '1':
+                if (userLiked) return 'You';
+                else return likeUsers[0];
+
+            case '2':
+                if (userLiked) return `You and ${otherLikes[0]}`;
+                else return `${likeUsers[0]} and ${likeUsers[1]}`;
+
+            case '3':
+                if (userLiked) return `You, ${otherLikes[0]} and 1 other`;
+                else return `${likeUsers[0]}, ${likeUsers[1]} and 1 other`;
+
+            default:
+                if (userLiked) return `You, ${otherLikes[0]} and ${showLikes(likeCount - 2)} others`;
+                else return `${likeUsers[0]}, ${likeUsers[1]} and ${showLikes(likeCount - 2)} others`;
+        }
     }
 
     async function editPost() {
-        console.log("Editar Post");
         if (!editOn) {
-            focusEdit.current.focus()
             setEditOn(true);
-            console.log(editOn)
         } else {
-            focusEdit.current.blur();
             setEditOn(false);
             setDescriptionEdit(lastDescription);
-            console.log(editOn)
         }
     }
 
@@ -72,7 +123,6 @@ export function Post({ postInfo, myUsername }) {
     async function handleKeyPress(event) {
         if (event.key === 'Enter') {
             setEditOn(false);
-            setLastDescription(descriptionEdit)
             pacthPostEdit()
         }
     }
@@ -95,11 +145,9 @@ export function Post({ postInfo, myUsername }) {
             description: descriptionEdit,
             postId: id
         }
-        console.log(objeto)
-        console.log(config)
         axios.patch(`${process.env.REACT_APP_API_URL}/post`, objeto, config)
             .then((res) => {
-                console.log(res.data)
+                setLastDescription(descriptionEdit);
             })
             .catch((err) => {
                 alert("Houve um erro ao editar seu post")
@@ -112,10 +160,8 @@ export function Post({ postInfo, myUsername }) {
         const config = {
             headers: { Authorization: `Bearer ${auth.token}` }
         }
-        console.log(config)
         axios.delete(`${process.env.REACT_APP_API_URL}/post/${id}`, config)
             .then((res) => {
-                console.log(res.data)
             })
             .catch((err) => {
                 alert("Houve um erro ao deletar seu post")
@@ -141,18 +187,29 @@ export function Post({ postInfo, myUsername }) {
             <ImgLike>
                 <img src={picture} alt="profile" />
                 {liked()}
-                <span>{showLikes()} likes</span>
+                <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
+                <Tooltip data-test="tooltip" id="likes-tooltip"
+                    style={{
+                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        opacity: "1",
+                        color: "#282829",
+                        borderRadius: "17px",
+                    }} />
             </ImgLike>
             <ContentContainer edit={editOn}>
                 <NameConfigPost>
-                    <span>{userName}</span>
+                    <span data-test="username" >{userName}</span>
                     <PostConfig hide={myUsername === userName}>
-                        <TiPencil onClick={editPost} />
-                        <AiFillDelete onClick={openModal} />
+                        <TiPencil data-test="edit-btn" onClick={editPost} />
+                        <AiFillDelete data-test="delete-btn" onClick={openModal} />
                     </PostConfig>
                 </NameConfigPost>
-                <textarea ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyPress={handleKeyPress} />
-                <Link to={link} target="_blank" data-test="link">
+                {
+                    editOn ?
+                    <textarea ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyPress={handleKeyPress} /> :
+                    <HashtagDescription description={descriptionEdit} />
+                }
+                <Link data-test="link" to={link} target="_blank" >
                     <CardMetadata>
                         <div>
                             <h2>{linkMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
@@ -212,10 +269,12 @@ const ImgLike = styled.div`
         width: 50px;
         height: 50px;
         border-radius: 100%;
+        object-fit: cover;
     }
     svg{
         width: 35px;
         height: 35px;
+        cursor: pointer;
     }
     span{
         font-family: 'Lato', sans-serif;
@@ -223,6 +282,11 @@ const ImgLike = styled.div`
         font-size: 14px;
         text-align: center;
         word-wrap: break-word;
+    }
+    > div{
+        font-family: 'Lato', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
     }
 `;
 
@@ -238,7 +302,7 @@ const ContentContainer = styled.div`
         font-weight: 400;
         font-size: 20px;
         color: #B7B7B7;
-        background-color: ${(prop) => prop.edit ? '#FFFFFF' : 'transparent'};
+        background-color: #FFFFFF;
         border-radius: 7px;
         border: none;
         word-wrap: break-word;
@@ -255,6 +319,10 @@ const ContentContainer = styled.div`
 
     a{
         text-decoration: none;
+        color: #FFFFFF;
+        font-family: 'Lato', sans-serif;
+        font-weight: 700;
+        font-size: 20px;
     }
 `;
 
