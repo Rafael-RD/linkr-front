@@ -50,11 +50,11 @@ export default function Header() {
       </MyHeader>
       
       <Holder transform={anim}>
-        <div>
-          <p onClick={logout}>Logout</p>
+        <div data-test="menu">
+          <p onClick={logout} data-test="logout">Logout</p>
         </div>
-        <section data-test="menu">
-          <p onClick={logout} data-test="logout">
+        <section >
+          <p onClick={logout} >
             Logout
           </p>
         </section>

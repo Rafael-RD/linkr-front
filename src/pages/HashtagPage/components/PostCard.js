@@ -1,9 +1,14 @@
+import { useContext, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 import styled from "styled-components";
 import HashtagDescription from "../../../components/HashtagDescription";
+import AuthContext from "../../../context/auth.context";
 
 export default function PostCard({ item }) {
+  const { auth } = useContext(AuthContext);
+  const myUsername = auth.username;
   const {
     id,
     picture,
@@ -13,7 +18,45 @@ export default function PostCard({ item }) {
     description,
     linkMetadata,
     link,
+    like_users,
   } = item;
+  const [likeCount, setLikeCount] = useState(qtt_likes);
+  const [likeUsers, setLikeUsers] = useState(like_users);
+
+  function tooltipContent() {
+    if (!Number(likeCount)) return null;
+    const userLiked = likeUsers?.includes(myUsername);
+    const otherLikes = [...likeUsers];
+    otherLikes?.splice(likeUsers.indexOf(myUsername), 1);
+    switch (likeCount) {
+      case "1":
+        if (userLiked) return "You";
+        else return likeUsers[0];
+
+      case "2":
+        if (userLiked) return `You and ${otherLikes[0]}`;
+        else return `${likeUsers[0]} and ${likeUsers[1]}`;
+
+      case "3":
+        if (userLiked) return `You, ${otherLikes[0]} and 1 other`;
+        else return `${likeUsers[0]}, ${likeUsers[1]} and 1 other`;
+
+      default:
+        if (userLiked)
+          return `You, ${otherLikes[0]} and ${showLikes(likeCount - 2)} others`;
+        else
+          return `${likeUsers[0]}, ${likeUsers[1]} and ${showLikes(
+            likeCount - 2
+          )} others`;
+    }
+  }
+
+  function showLikes(likes) {
+    if (!likes) return "0";
+    else if (likes < 1000) return likes;
+    else if (likes < 1000 * 1000) return Math.floor(likes / 1000) + " K";
+    else return Math.floor(likes / (1000 * 1000)) + " M";
+  }
 
   return (
     <li data-test="post">
@@ -31,7 +74,24 @@ export default function PostCard({ item }) {
           ) : (
             <AiOutlineHeart color={"white"} size={20} data-test="like-btn" />
           )}
-          <p data-test="counter">{qtt_likes} likes</p>
+          <p
+            data-test="counter"
+            data-tooltip-id="likes-tooltip"
+            data-tooltip-content={tooltipContent()}
+            data-tooltip-place="bottom"
+          >
+            {qtt_likes} likes
+          </p>
+          <Tooltip
+            data-test="tooltip"
+            id="likes-tooltip"
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.9)",
+              opacity: "1",
+              color: "#282829",
+              borderRadius: "17px",
+            }}
+          />
         </LikeInfo>
       </ItemNav>
       <PostInfo>
@@ -84,6 +144,11 @@ const ItemNav = styled.div`
   }
   svg {
     cursor: pointer;
+    width: 35px;
+    height: 35px;
+  }
+  p {
+    cursor: default;
   }
 `;
 

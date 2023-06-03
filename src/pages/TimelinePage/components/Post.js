@@ -106,8 +106,14 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                 <img src={picture} alt="profile" 
                 onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)} />
                 {liked()}
-                <span data-test="counter" data-tooltip-variant="info" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
-                <Tooltip data-test="tooltip" id="likes-tooltip" />
+                <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
+                <Tooltip data-test="tooltip" id="likes-tooltip"
+                    style={{
+                        backgroundColor: "rgba(255, 255, 255, 0.9)",
+                        opacity: "1",
+                        color: "#282829",
+                        borderRadius: "17px",
+                    }} />
             </ImgLike>
             <ContentContainer>
                 <NameConfigPost>
@@ -169,6 +175,7 @@ const ImgLike = styled.div`
     svg{
         width: 35px;
         height: 35px;
+        cursor: pointer;
     }
     span{
         font-family: 'Lato', sans-serif;
@@ -176,6 +183,11 @@ const ImgLike = styled.div`
         font-size: 14px;
         text-align: center;
         word-wrap: break-word;
+    }
+    > div{
+        font-family: 'Lato', sans-serif;
+        font-weight: 700;
+        font-size: 13px;
     }
 `;
 
