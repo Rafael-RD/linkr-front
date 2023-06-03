@@ -59,11 +59,11 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     function liked() {
         if (likeUsers?.includes(myUsername)) {
             return (
-                <AiFillHeart color="red" onClick={!disable ? (like) : null} />
+                <AiFillHeart data-test="like-btn" color="red" onClick={!disable ? (like) : null} />
             )
         } else {
             return (
-                <AiOutlineHeart disabled={disable} onClick={!disable ? (like) : null} />
+                <AiOutlineHeart data-test="like-btn" disabled={disable} onClick={!disable ? (like) : null} />
             )
         }
     }
@@ -104,8 +104,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
             <ImgLike>
                 <img src={picture} alt="profile" />
                 {liked()}
-                <span data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
-                <Tooltip id="likes-tooltip" />
+                <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
+                <Tooltip data-test="tooltip" id="likes-tooltip" />
             </ImgLike>
             <ContentContainer>
                 <NameConfigPost>
