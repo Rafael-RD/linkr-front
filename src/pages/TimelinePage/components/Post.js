@@ -2,15 +2,15 @@ import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
 import { Link } from "react-router-dom";
+import { useRef } from "react";
+import AuthContext from "../../../context/auth.context.js";
+import axios from "axios";
+import Modal from 'react-modal';
 import { Tooltip } from "react-tooltip";
 import { useContext, useState } from "react";
-import AuthContext from "../../../context/auth.context";
-import axios from "axios";
 import HashtagDescription from "../../../components/HashtagDescription.js";
 
 export function Post({ postInfo, myUsername, setReload, disable }) {
-    const { auth } = useContext(AuthContext);
-
     /* eslint-disable */
     const {
         id,
@@ -25,6 +25,13 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         linkMetadata
     } = postInfo;
     /* eslint-enable */
+    const focusEdit = useRef();
+    const [editOn, setEditOn] = useState(false);
+    const [descriptionEdit, setDescriptionEdit] = useState(description);
+    const [lastDescription, setLastDescription] = useState(description);
+    const [modalIsOpen, setIsOpen] = useState(false);
+    const { auth } = useContext(AuthContext);
+    let subtitle;
     const [likeCount, setLikeCount] = useState(qtt_likes)
     const [likeUsers, setLikeUsers] = useState(like_users)
 
@@ -100,8 +107,84 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
     }
 
+    async function editPost() {
+        if (!editOn) {
+            setEditOn(true);
+        } else {
+            setEditOn(false);
+            setDescriptionEdit(lastDescription);
+        }
+    }
+
+    function handleChange(e) {
+        setDescriptionEdit(e.target.value);
+    }
+
+    async function handleKeyPress(event) {
+        if (event.key === 'Enter') {
+            setEditOn(false);
+            pacthPostEdit()
+        }
+    }
+
+
+    function openModal() {
+        setIsOpen(true);
+    }
+
+    function closeModal() {
+        setIsOpen(false);
+    }
+
+    function pacthPostEdit() {
+        const config = {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        }
+
+        const objeto = {
+            description: descriptionEdit,
+            postId: id
+        }
+        axios.patch(`${process.env.REACT_APP_API_URL}/post`, objeto, config)
+            .then((res) => {
+                setLastDescription(descriptionEdit);
+            })
+            .catch((err) => {
+                alert("Houve um erro ao editar seu post")
+                console.log(err.message)
+            })
+    }
+
+
+    function deletePost() {
+        const config = {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        }
+        axios.delete(`${process.env.REACT_APP_API_URL}/post/${id}`, config)
+            .then((res) => {
+                setReload(true);
+            })
+            .catch((err) => {
+                alert("Houve um erro ao deletar seu post")
+                console.log(err.message)
+            })
+    }
+
+
     return (
         <PostContainer data-test="post" >
+            <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                style={customStyles}
+                contentLabel="Example Modal"
+            >
+                <h2 >Are you sure you want to delete this post?</h2>
+                <div>
+                    <button className="back" onClick={closeModal}>No, go back</button>
+                    <button className="delete" onClick={() => { closeModal(); deletePost(); }}>Yes, delete it</button>
+                </div>
+            </Modal>
             <ImgLike>
                 <img src={picture} alt="profile" 
                 onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)} />
@@ -115,15 +198,19 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                         borderRadius: "17px",
                     }} />
             </ImgLike>
-            <ContentContainer>
+            <ContentContainer edit={editOn}>
                 <NameConfigPost>
                     <span data-test="username" >{userName}</span>
                     <PostConfig hide={myUsername === userName}>
-                        <TiPencil data-test="edit-btn" />
-                        <AiFillDelete data-test="delete-btn" />
+                        <TiPencil data-test="edit-btn" onClick={editPost} />
+                        <AiFillDelete data-test="delete-btn" onClick={openModal} />
                     </PostConfig>
                 </NameConfigPost>
-                <HashtagDescription description={description} />
+                {
+                    editOn ?
+                    <textarea ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyPress={handleKeyPress} /> :
+                    <HashtagDescription description={descriptionEdit} />
+                }
                 <Link data-test="link" to={link} target="_blank" >
                     <CardMetadata>
                         <div>
@@ -144,6 +231,20 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         </PostContainer>
     )
 }
+
+const customStyles = {
+    content: {
+        position: "absolute",
+        top: 'calc(50% - 131px)',
+        left: 'calc(50% - 298px)',
+        right: 'auto',
+        bottom: 'auto',
+        width: "597px",
+        height: "262px",
+        background: "#333333",
+        borderRadius: "50px",
+    },
+};
 
 const PostContainer = styled.div`
     width: 100%;
@@ -197,13 +298,18 @@ const ContentContainer = styled.div`
     flex-direction: column;
     gap: 15px;
 
-    p{
+    textarea{
         width: 100%;
         font-family: 'Lato', sans-serif;
         font-weight: 400;
         font-size: 20px;
         color: #B7B7B7;
+        background-color: #FFFFFF;
+        border-radius: 7px;
+        border: none;
         word-wrap: break-word;
+        resize: none;
+        overflow: auto;
     }
 
     span{

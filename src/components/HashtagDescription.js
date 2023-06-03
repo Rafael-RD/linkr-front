@@ -30,7 +30,7 @@ export default function HashtagDescription(props) {
             </NavLink>
           );
         } else {
-          return <React.Fragment key={index}>{fragment}</React.Fragment>;
+          return <React.Fragment key={index}>{fragment}</React.Fragment>
         }
       })}
     </p>
