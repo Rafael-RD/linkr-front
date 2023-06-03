@@ -4,12 +4,11 @@ import AuthContext from "../../../context/auth.context.js";
 import axios from "axios";
 import { Post } from "./Post.js";
 
-export function Timeline({reload, setReload}) {
+export function Timeline({reload, setReload, posts, setPosts}) {
     const { auth } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-    const [posts, setPosts] = useState([]);
-    // const [disable, setDisable] = useState(false)
+
     let disable=false
     useEffect(() => {
         setLoading(true);
@@ -30,17 +29,17 @@ export function Timeline({reload, setReload}) {
     }, [reload]);
 
     function showTimeline() {
-        if (loading) {
+        if (loading && !posts.length) {
             return (
-                <span>Loading</span>
+                <span data-test="message" >Loading</span>
             )
         } else if (error) {
             return (
-                <span>An error occured while trying to fetch the posts, please refresh the page</span>
+                <span data-test="message" >An error occured while trying to fetch the posts, please refresh the page</span>
             )
         } else if (posts.length === 0) {
             return (
-                <span>There are no posts yet</span>
+                <span data-test="message" >There are no posts yet</span>
             )
         } else {
             return (

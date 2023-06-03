@@ -76,7 +76,7 @@ export default function SignupPage() {
             onChange={handleChange}
             value={form.username}
             disabled={loading}
-            ata-test="username"
+            data-test="username"
           />
           <input
             placeholder="picture url"
