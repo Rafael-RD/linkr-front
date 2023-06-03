@@ -27,6 +27,7 @@ export function Post({ postInfo, myUsername }) {
     const focusEdit = useRef();
     const [editOn, setEditOn] = useState(false);
     const [descriptionEdit, setDescriptionEdit] = useState(description);
+    const [lastDescription, setLastDescription] = useState(description);
     const [modalIsOpen, setIsOpen] = useState(false);
     const { auth } = useContext(AuthContext);
     let subtitle;
@@ -59,27 +60,9 @@ export function Post({ postInfo, myUsername }) {
         } else {
             focusEdit.current.blur();
             setEditOn(false);
-            setDescriptionEdit(description);
+            setDescriptionEdit(lastDescription);
             console.log(editOn)
         }
-    }
-
-    async function deletePost() {
-        const config = {
-            headers: { Authorization: `Bearer ${auth.token}` }
-        }
-
-        const objeto = {
-            postId: id
-        }
-        axios.delete(`${process.env.REACT_APP_API_URL}/post`, objeto, config)
-            .then((res) => {
-                console.log(res.data)
-            })
-            .catch((err) => {
-                alert("Houve um erro ao deletar seu post")
-                console.log(err.message)
-            })
     }
 
     function handleChange(e) {
@@ -89,6 +72,7 @@ export function Post({ postInfo, myUsername }) {
     async function handleKeyPress(event) {
         if (event.key === 'Enter') {
             setEditOn(false);
+            setLastDescription(descriptionEdit)
             pacthPostEdit()
         }
     }
@@ -111,6 +95,8 @@ export function Post({ postInfo, myUsername }) {
             description: descriptionEdit,
             postId: id
         }
+        console.log(objeto)
+        console.log(config)
         axios.patch(`${process.env.REACT_APP_API_URL}/post`, objeto, config)
             .then((res) => {
                 console.log(res.data)
@@ -121,6 +107,23 @@ export function Post({ postInfo, myUsername }) {
             })
     }
 
+
+    function deletePost() {
+        const config = {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        }
+        console.log(config)
+        axios.delete(`${process.env.REACT_APP_API_URL}/post/${id}`, config)
+            .then((res) => {
+                console.log(res.data)
+            })
+            .catch((err) => {
+                alert("Houve um erro ao deletar seu post")
+                console.log(err.message)
+            })
+    }
+
+
     return (
         <PostContainer>
             <Modal
@@ -129,10 +132,11 @@ export function Post({ postInfo, myUsername }) {
                 style={customStyles}
                 contentLabel="Example Modal"
             >
-                <h2 >Are you sure you want
-                    to delete this post?</h2>
-                <button class="back" onClick={closeModal}>No, go back</button>
-                <button class="delete" onClick={() => {closeModal(); deletePost();} }>Yes, delete it</button>
+                <h2 >Are you sure you want to delete this post?</h2>
+                <div>
+                    <button className="back" onClick={closeModal}>No, go back</button>
+                    <button className="delete" onClick={() => { closeModal(); deletePost(); }}>Yes, delete it</button>
+                </div>
             </Modal>
             <ImgLike>
                 <img src={picture} alt="profile" />
@@ -181,7 +185,7 @@ const customStyles = {
         background: "#333333",
         borderRadius: "50px",
     },
-  };
+};
 
 const PostContainer = styled.div`
     width: 100%;
@@ -194,21 +198,6 @@ const PostContainer = styled.div`
 
     span, p, svg{
         color: white;
-    }
-
-    button{
-        position: absolute;
-        width: 134px;
-        height: 37px;
-        left: 572px;
-        top: 508px;
-        border-radius: 5px;
-    }
-    .back{
-        background: #FFFFFF;
-    }
-    .delete{
-        background: #1877F2;
     }
 `;
 
