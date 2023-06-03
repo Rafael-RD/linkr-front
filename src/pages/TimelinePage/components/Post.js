@@ -60,11 +60,11 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     function liked() {
         if (likeUsers?.includes(myUsername)) {
             return (
-                <AiFillHeart color="red" onClick={!disable ? (like) : null} />
+                <AiFillHeart data-test="like-btn" color="red" onClick={!disable ? (like) : null} />
             )
         } else {
             return (
-                <AiOutlineHeart disabled={disable} onClick={!disable ? (like) : null} />
+                <AiOutlineHeart data-test="like-btn" disabled={disable} onClick={!disable ? (like) : null} />
             )
         }
     }
@@ -101,23 +101,23 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     }
 
     return (
-        <PostContainer>
+        <PostContainer data-test="post" >
             <ImgLike>
                 <img src={picture} alt="profile" />
                 {liked()}
-                <span data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
-                <Tooltip id="likes-tooltip" />
+                <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
+                <Tooltip data-test="tooltip" id="likes-tooltip" />
             </ImgLike>
             <ContentContainer>
                 <NameConfigPost>
-                    <span>{userName}</span>
+                    <span data-test="username" >{userName}</span>
                     <PostConfig hide={myUsername === userName}>
-                        <TiPencil />
-                        <AiFillDelete />
+                        <TiPencil data-test="edit-btn" />
+                        <AiFillDelete data-test="delete-btn" />
                     </PostConfig>
                 </NameConfigPost>
+                <Link data-test="link" to={link} target="_blank" >
                 <HashtagDescription description={description} />
-                <Link to={link} target="_blank" data-test="link">
                     <CardMetadata>
                         <div>
                             <h2>{linkMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
