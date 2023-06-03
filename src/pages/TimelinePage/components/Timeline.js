@@ -4,12 +4,13 @@ import AuthContext from "../../../context/auth.context.js";
 import axios from "axios";
 import { Post } from "./Post.js";
 
-export function Timeline() {
+export function Timeline({reload, setReload}) {
     const { auth } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [posts, setPosts] = useState([]);
 
+    let disable=false
     useEffect(() => {
         setLoading(true);
         if (auth) {
@@ -25,7 +26,8 @@ export function Timeline() {
                     setError(true);
                 });
         } else setLoading(false);
-    }, []);
+        setReload(false)
+    }, [reload]);
 
     function showTimeline() {
         if (loading) {
@@ -43,7 +45,8 @@ export function Timeline() {
         } else {
             return (
                 <>
-                    {posts.map(e=><Post key={e.id} postInfo={e} myUsername={auth?.username} />)}
+                    {posts.map(e=><Post key={e.id} postInfo={e} myUsername={auth?.username} 
+                    setReload={setReload} disable={disable}/>)}
                 </>
             )
         }
