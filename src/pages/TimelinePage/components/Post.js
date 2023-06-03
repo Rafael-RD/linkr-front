@@ -6,6 +6,7 @@ import { Tooltip } from "react-tooltip";
 import { useContext, useState } from "react";
 import AuthContext from "../../../context/auth.context";
 import axios from "axios";
+import HashtagDescription from "../../../components/HashtagDescription.js";
 
 export function Post({ postInfo, myUsername, setReload, disable }) {
     const { auth } = useContext(AuthContext);
@@ -115,8 +116,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                         <AiFillDelete data-test="delete-btn" />
                     </PostConfig>
                 </NameConfigPost>
-                <p>{description}</p>
                 <Link data-test="link" to={link} target="_blank" >
+                <HashtagDescription description={description} />
                     <CardMetadata>
                         <div>
                             <h2>{linkMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
@@ -200,6 +201,10 @@ const ContentContainer = styled.div`
 
     a{
         text-decoration: none;
+        color: #FFFFFF;
+        font-family: 'Lato', sans-serif;
+        font-weight: 700;
+        font-size: 20px;
     }
 `;
 
