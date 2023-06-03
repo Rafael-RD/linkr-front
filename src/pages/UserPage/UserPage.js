@@ -21,7 +21,6 @@ export default function UserPage() {
         if (auth) {
             axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then(resp => {
-                    console.log(resp.data);
                     setPosts(resp.data);
                     setLoading(false);
                 })

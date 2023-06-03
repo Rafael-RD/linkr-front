@@ -15,7 +15,6 @@ export function Timeline({reload, setReload, posts, setPosts}) {
         if (auth) {
             axios.get(`${process.env.REACT_APP_API_URL}/timeline`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then(resp => {
-                    console.log(resp.data);
                     setPosts(resp.data);
                     setLoading(false);
                 })
