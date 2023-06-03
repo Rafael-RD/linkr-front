@@ -11,7 +11,6 @@ export default function Search() {
     const { auth } = useContext(AuthContext);
 
     async function evento(value) {
-        console.log(value)
         const valor = { search: value }
         const config = {
             headers: { Authorization: `Bearer ${auth.token}` }
@@ -19,7 +18,6 @@ export default function Search() {
         if (value.length >= 3) {
             axios.post(`${process.env.REACT_APP_API_URL}/searchUsers`, valor, config)
                 .then((res) => {
-                    console.log(res.data)
                     if(res.data.length > 0){
                         setSearch(res.data)
                         setBorder("square")
