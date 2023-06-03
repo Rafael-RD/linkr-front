@@ -23,6 +23,12 @@ export default function TimelinePage() {
     function postLink(e){
         e.preventDefault();
         setDisable(true)
+        if(form.link === "" || form.link === null || form.link === undefined){
+            alert("There was an error publishing your link")
+            setDisable(false)
+        }
+        else{        
+        
         const config = {
             headers: { Authorization: `Bearer ${auth.token}` }
         } 
@@ -36,10 +42,11 @@ export default function TimelinePage() {
                     setReload(true);
                 })
                 .catch((err) => {
-                    alert("Houve um erro ao publicar seu link")
+                    alert("There was an error publishing your link")
                     console.log(err.message)
                     setDisable(false)
                 })
+        }
     }
 
     return(
@@ -62,6 +69,7 @@ export default function TimelinePage() {
                             name="link"
                             value={form.link}
                             disabled={disable}
+                            // required
                             onChange={handleChange} />
                         <textarea
                             data-test="description"

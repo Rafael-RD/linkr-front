@@ -42,10 +42,11 @@ export default function Search() {
 
     return (
         <TotalContainer>
-            <InputContainer border={border} data-test="search">
+            <InputContainer border={border} >
                 <form>
                     <div>
                         <DebounceInput
+                            data-test="search"
                             placeholder="Search for people"
                             minLength={3}
                             debounceTimeout={300}
