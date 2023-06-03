@@ -97,6 +97,7 @@ const TimeLineContainer = styled.div`
         font-size: 43px;
         width: 100%;
         margin-bottom: 43px;
+        line-height: 64px;
     }
 
 `
