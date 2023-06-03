@@ -2,7 +2,6 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 export default function HashtagDescription(props) {
-  console.log(props);
   const { description } = props;
   const fragments = description.split(" ");
   const filteredArr = [];
@@ -31,10 +30,7 @@ export default function HashtagDescription(props) {
             </NavLink>
           );
         } else {
-          return ( 
-            <React.Fragment key={index}>
-              {fragment}</React.Fragment>
-          );
+          return <React.Fragment key={index}>{fragment}</React.Fragment>
         }
       })}
     </p>
