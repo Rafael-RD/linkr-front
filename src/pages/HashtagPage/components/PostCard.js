@@ -25,7 +25,6 @@ export default function PostCard({ item }) {
 
   function tooltipContent() {
     if (!Number(likeCount)) return null;
-    console.log(likeCount);
     const userLiked = likeUsers?.includes(myUsername);
     const otherLikes = [...likeUsers];
     otherLikes?.splice(likeUsers.indexOf(myUsername), 1);
