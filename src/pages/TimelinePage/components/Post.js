@@ -3,8 +3,13 @@ import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
+import { useContext, useState } from "react";
+import AuthContext from "../../../context/auth.context";
+import axios from "axios";
 
-export function Post({ postInfo, myUsername }) {
+export function Post({ postInfo, myUsername, setReload, disable}) {
+    const { auth } = useContext(AuthContext);
+
     /* eslint-disable */
     const {
         id,
@@ -19,15 +24,46 @@ export function Post({ postInfo, myUsername }) {
         linkMetadata
     } = postInfo;
     /* eslint-enable */
+    const [likeCount, setLikeCount] = useState(qtt_likes)
+    const [likeUsers, setLikeUsers] = useState(like_users)
 
+    function like(){
+       
+        const post = String(postInfo.id)
+        const config = {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        }
+        if(disable) return
+        disable = true
+        axios.post(`${process.env.REACT_APP_API_URL}/likes/${post}`, {}, config)
+                .then((res) => {
+                    disable=false
+                    let like_users_copy = []
+                    if(like_users){
+                        like_users_copy = [...like_users]
+                    }
+                    if(res.data[0]?.user_liked && !like_users_copy.includes(myUsername)){
+                        like_users_copy.push(myUsername)
+                    } 
+                    if(!res.data[0]?.user_liked && like_users_copy.includes(myUsername)){
+                        like_users_copy = like_users_copy.filter(e => e !== myUsername)
+                    }
+                    setLikeCount(res.data[0]?.qtt_likes || 0)
+                    setLikeUsers(like_users_copy)
+                })
+                .catch((err) => {
+                    alert(err.message)
+                    disable=false
+                })
+    }
     function liked() {
-        if (like_users?.includes(myUsername)) {
+        if (likeUsers?.includes(myUsername)) {
             return (
-                <AiFillHeart />
+                <AiFillHeart color="red" onClick={!disable?( like ) : null} />
             )
         } else {
             return (
-                <AiOutlineHeart />
+                <AiOutlineHeart disabled={disable} onClick={!disable?(like) : null} />
             )
         }
     }
@@ -40,25 +76,25 @@ export function Post({ postInfo, myUsername }) {
     }
 
     function tooltipContent(){
-        const test={qtt_likes}
-        if(!qtt_likes) return "";
+        const test={likeCount}
+        if(!likeCount) return "";
         else{
             let loggedUserLiked=false;
-            if(like_users?.includes(myUsername)) loggedUserLiked=true;
-            if(qtt_likes==='1') {
+            if(likeUsers?.includes(myUsername)) loggedUserLiked=true;
+            if(likeCount==='1') {
                 console.log('one')
-                return loggedUserLiked?'You': `${like_users[0]}`;
+                return loggedUserLiked?'You': `${likeUsers[0]}`;
             } else {
-                const otherLikes=like_users?.splice(like_users.indexOf(myUsername), 1);
-                if(qtt_likes==='2'){
+                const otherLikes=likeUsers?.splice(likeUsers.indexOf(myUsername), 1);
+                if(likeCount==='2'){
                     console.log('two')
                     return loggedUserLiked?`You and ${otherLikes[0]}`: `${otherLikes[0]} and ${otherLikes[1]}`;
                 }else{
-                    if(qtt_likes==='3'){
+                    if(likeCount==='3'){
                         console.log('3')
                         return loggedUserLiked?`You, ${otherLikes[0]} and 1 other`: `${otherLikes[0]}, ${otherLikes[1]} and 1 other`;
                     }
-                    else return loggedUserLiked?`You, ${otherLikes[0]} and ${showLikes(qtt_likes-2)} others`: `${otherLikes[0]}, ${otherLikes[1]} and ${showLikes(qtt_likes-2)} others`;
+                    else return loggedUserLiked?`You, ${otherLikes[0]} and ${showLikes(likeCount-2)} others`: `${otherLikes[0]}, ${otherLikes[1]} and ${showLikes(likeCount-2)} others`;
                 }
 
             }
@@ -71,7 +107,7 @@ export function Post({ postInfo, myUsername }) {
             <ImgLike>
                 <img src={picture} alt="profile" />
                 {liked()}
-                <span data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} >{showLikes(qtt_likes)} likes</span>
+                <span data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} >{showLikes(likeCount)} likes</span>
                 <Tooltip id="likes-tooltip" />
             </ImgLike>
             <ContentContainer>
