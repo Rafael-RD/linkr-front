@@ -172,7 +172,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
 
 
     return (
-        <PostContainer>
+        <PostContainer data-test="post" >
             <Modal
                 isOpen={modalIsOpen}
                 onRequestClose={closeModal}
