@@ -34,6 +34,7 @@ export function Timeline({reload, setReload, posts, setPosts}) {
                 <span data-test="message" >Loading</span>
             )
         } else if (error) {
+            alert('An error occured while trying to fetch the posts, please refresh the page');
             return (
                 <span data-test="message" >An error occured while trying to fetch the posts, please refresh the page</span>
             )

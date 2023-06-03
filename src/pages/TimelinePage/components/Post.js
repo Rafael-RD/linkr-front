@@ -103,7 +103,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     return (
         <PostContainer data-test="post" >
             <ImgLike>
-                <img src={picture} alt="profile" />
+                <img src={picture} alt="profile" 
+                onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)} />
                 {liked()}
                 <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
                 <Tooltip data-test="tooltip" id="likes-tooltip"
