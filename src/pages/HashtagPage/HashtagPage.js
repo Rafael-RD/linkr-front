@@ -20,6 +20,7 @@ export default function HashtagPage() {
         .getTagPostList(auth.token, hashtag)
         .then(({ data }) => {
           setPostList(data);
+          console.log(data)
         })
         .catch((err) => {
           alert(`Error ${err.response.status}: ${err.response.data}`);
