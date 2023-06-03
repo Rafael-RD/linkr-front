@@ -162,6 +162,7 @@ const ImgLike = styled.div`
         width: 50px;
         height: 50px;
         border-radius: 100%;
+        object-fit: cover;
     }
     svg{
         width: 35px;
