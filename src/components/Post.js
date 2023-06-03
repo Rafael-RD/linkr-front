@@ -324,11 +324,11 @@ const ContentContainer = styled.div`
         overflow: auto;
     }
 
-    span{
+    p{
         font-family: 'Lato', sans-serif;
-        font-weight: 700;
+        font-weight: 400;
         font-size: 20px;
-        color: #FFFFFF;
+        color: #B7B7B7;
     }
 
     a{
