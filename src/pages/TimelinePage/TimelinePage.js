@@ -8,8 +8,9 @@ import TrendingList from "../../components/TrendingList";
 
 export default function TimelinePage() {
     const { auth } = useContext(AuthContext);
-    const [disable, setDisable] = useState(false)
-    const [reload, setReload] = useState(false)
+    const [disable, setDisable] = useState(false);
+    const [reload, setReload] = useState(false);
+    const [posts, setPosts] = useState([]);
     const [form, setForm] = useState({
         link: "",
         description: ""
@@ -31,7 +32,8 @@ export default function TimelinePage() {
                     //Retorna o Id do Post criado!!!
                     console.log(res.data)
                     setForm({link: "", description: ""})
-                    setReload(true)
+                    setPosts([{...form, id: res.data.id, userName: auth.username, picture: auth.picture, linkMetadata: null}, ...posts]);
+                    setReload(true);
                 })
                 .catch((err) => {
                     alert("Houve um erro ao publicar seu link")
@@ -50,7 +52,8 @@ export default function TimelinePage() {
             <ContentContainer>
                 <PostContent data-test="publish-box">
                     <img src={auth?.picture}
-                    alt="Imagem do Usuário"/>
+                    alt="Imagem do Usuário"
+                    onClick={()=>setForm({link: "https://teste.com", description: `testando um bagulhinho aqui de leve ${(new Date).toString()} #paz`})}/>
                     <form onSubmit={postLink}>
                         <p>What are you going to share today?</p>
                         <input
@@ -74,7 +77,7 @@ export default function TimelinePage() {
                             )}
                     </form>
                 </PostContent>
-                <Timeline reload={reload} setReload={setReload}/>
+                <Timeline reload={reload} setReload={setReload} posts={posts} setPosts={setPosts}/>
             </ContentContainer>
             <TrendingList/>
             </Wrapper>
