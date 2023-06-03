@@ -2,11 +2,12 @@ import styled from "styled-components";
 import Header from "../../components/Header";
 import TrendingList from "../../components/TrendingList";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { Link, NavLink, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../../context/auth.context";
 import tagsServices from "../../services/tagsServices";
 import { ThreeDots } from "react-loader-spinner";
+import HashtagDescription from "../../components/HashtagDescription";
 
 export default function HashtagPage() {
   const { auth } = useContext(AuthContext);
@@ -70,7 +71,7 @@ export default function HashtagPage() {
                   </ItemNav>
                   <PostInfo>
                     <h6 data-test="username">{p.userName}</h6>
-                    {FilterTags(p.description)}
+                    <HashtagDescription description={p.description} />
                     <Link to={p.link} target="_blank" data-test="link">
                       <MetaDataContainer>
                         <div>
@@ -108,41 +109,6 @@ export default function HashtagPage() {
         </Wrapper>
       </PageStyle>
     </>
-  );
-}
-
-function FilterTags(description) {
-  const fragments = description.split(" ");
-  const filteredArr = [];
-  let aux = "";
-  fragments.forEach((f, index) => {
-    if (f.includes("#")) {
-      if (aux) {
-        filteredArr.push(aux);
-        aux = "";
-      }
-      const value = index === fragments.length - 1 ? f : `${f} `;
-      filteredArr.push(value);
-    } else {
-      aux += `${f} `;
-    }
-  });
-
-  return (
-    <p data-test="description">
-      {filteredArr.map((fragment, index) => {
-        if (fragment.includes("#")) {
-          const hashtag = fragment.substring(1);
-          return (
-            <NavLink key={index} to={`/hashtag/${hashtag}`}>
-              {fragment}
-            </NavLink>
-          );
-        } else {
-          return <React.Fragment key={index}>{fragment}</React.Fragment>;
-        }
-      })}
-    </p>
   );
 }
 
