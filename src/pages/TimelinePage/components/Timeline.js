@@ -9,7 +9,7 @@ export function Timeline({reload, setReload}) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
     const [posts, setPosts] = useState([]);
-    // const [disable, setDisable] = useState(false)
+
     let disable=false
     useEffect(() => {
         setLoading(true);
