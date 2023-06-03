@@ -1,14 +1,14 @@
 import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { useRef } from "react";
-import AuthContext from "../../../context/auth.context.js";
 import axios from "axios";
 import Modal from 'react-modal';
 import { Tooltip } from "react-tooltip";
 import { useContext, useState } from "react";
-import HashtagDescription from "../../../components/HashtagDescription.js";
+import AuthContext from "../context/auth.context.js";
+import HashtagDescription from "./HashtagDescription.js";
 
 export function Post({ postInfo, myUsername, setReload, disable }) {
     /* eslint-disable */
@@ -18,6 +18,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         link,
         createdAt,
         userName,
+        userId,
         picture,
         qtt_likes,
         like_users,
@@ -31,7 +32,6 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     const [lastDescription, setLastDescription] = useState(description);
     const [modalIsOpen, setIsOpen] = useState(false);
     const { auth } = useContext(AuthContext);
-    let subtitle;
     const [likeCount, setLikeCount] = useState(qtt_likes)
     const [likeUsers, setLikeUsers] = useState(like_users)
 
@@ -200,7 +200,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
             </ImgLike>
             <ContentContainer edit={editOn}>
                 <NameConfigPost>
-                    <span data-test="username" >{userName}</span>
+                    <NavLink data-test="username" to={`/user/${userId}`} >{userName}</NavLink>
                     <PostConfig hide={myUsername === userName}>
                         <TiPencil data-test="edit-btn" onClick={editPost} />
                         <AiFillDelete data-test="delete-btn" onClick={openModal} />

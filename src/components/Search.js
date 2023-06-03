@@ -4,11 +4,14 @@ import { HiOutlineSearch } from "react-icons/hi"
 import { DebounceInput } from 'react-debounce-input';
 import AuthContext from "../context/auth.context";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
 export default function Search() {
     const [search, setSearch] = useState()
     const [border, setBorder] = useState("normal")
     const [noUser, setNoUser] = useState()
     const { auth } = useContext(AuthContext);
+    const navigate=useNavigate();
 
     async function evento(value) {
         const valor = { search: value }
@@ -63,7 +66,7 @@ export default function Search() {
             {search ? (
                 <UsersContainer>
                     {search?.map((user) =>
-                        <Users data-test="user-search">
+                        <Users data-test="user-search" onClick={()=>navigate(`/user/${user.id}`)} >
                             <img src={user?.picture} alt={user?.userName || 'Username'} />
                             <p>{user?.userName}</p>
                         </Users>
