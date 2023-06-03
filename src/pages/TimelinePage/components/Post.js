@@ -2,11 +2,12 @@ import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
 import { Link } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 import { useContext, useState } from "react";
 import AuthContext from "../../../context/auth.context";
 import axios from "axios";
 
-export function Post({ postInfo, myUsername, setReload, disable}) {
+export function Post({ postInfo, myUsername, setReload, disable }) {
     const { auth } = useContext(AuthContext);
 
     /* eslint-disable */
@@ -26,52 +27,76 @@ export function Post({ postInfo, myUsername, setReload, disable}) {
     const [likeCount, setLikeCount] = useState(qtt_likes)
     const [likeUsers, setLikeUsers] = useState(like_users)
 
-    function like(){
-       
+    function like() {
+
         const post = String(postInfo.id)
         const config = {
             headers: { Authorization: `Bearer ${auth.token}` }
         }
-        if(disable) return
+        if (disable) return
         disable = true
         axios.post(`${process.env.REACT_APP_API_URL}/likes/${post}`, {}, config)
-                .then((res) => {
-                    disable=false
-                    let like_users_copy = []
-                    if(like_users){
-                        like_users_copy = [...like_users]
-                    }
-                    if(res.data[0]?.user_liked && !like_users_copy.includes(myUsername)){
-                        like_users_copy.push(myUsername)
-                    } 
-                    if(!res.data[0]?.user_liked && like_users_copy.includes(myUsername)){
-                        like_users_copy = like_users_copy.filter(e => e !== myUsername)
-                    }
-                    setLikeCount(res.data[0]?.qtt_likes || 0)
-                    setLikeUsers(like_users_copy)
-                })
-                .catch((err) => {
-                    alert(err.message)
-                    disable=false
-                })
+            .then((res) => {
+                disable = false
+                let like_users_copy = []
+                if (like_users) {
+                    like_users_copy = [...like_users]
+                }
+                if (res.data[0]?.user_liked && !like_users_copy.includes(myUsername)) {
+                    like_users_copy.push(myUsername)
+                }
+                if (!res.data[0]?.user_liked && like_users_copy.includes(myUsername)) {
+                    like_users_copy = like_users_copy.filter(e => e !== myUsername)
+                }
+                setLikeCount(res.data[0]?.qtt_likes || 0)
+                setLikeUsers(like_users_copy)
+            })
+            .catch((err) => {
+                alert(err.message)
+                disable = false
+            })
     }
     function liked() {
         if (likeUsers?.includes(myUsername)) {
             return (
-                <AiFillHeart color="red" onClick={!disable?( like ) : null} />
+                <AiFillHeart color="red" onClick={!disable ? (like) : null} />
             )
         } else {
             return (
-                <AiOutlineHeart disabled={disable} onClick={!disable?(like) : null} />
+                <AiOutlineHeart disabled={disable} onClick={!disable ? (like) : null} />
             )
         }
     }
 
-    function showLikes() {
-        if (!likeCount) return "0";
-        else if (likeCount < 1000) return likeCount;
-        else if (likeCount < 1000 * 1000) return Math.floor(likeCount / 1000) + " K";
-        else return Math.floor(likeCount / (1000 * 1000)) + " M";
+    function showLikes(likes) {
+        if (!likes) return "0";
+        else if (likes < 1000) return likes;
+        else if (likes < 1000 * 1000) return Math.floor(likes / 1000) + " K";
+        else return Math.floor(likes / (1000 * 1000)) + " M";
+    }
+
+    function tooltipContent() {
+        if (!likeCount) return null;
+        const userLiked = likeUsers?.includes(myUsername);
+        const otherLikes = [...likeUsers];
+        otherLikes?.splice(likeUsers.indexOf(myUsername), 1);
+        switch (likeCount) {
+            case '1':
+                if (userLiked) return 'You';
+                else return likeUsers[0];
+
+            case '2':
+                if(userLiked) return `You and ${otherLikes[0]}`;
+                else return `${likeUsers[0]} and ${likeUsers[1]}`;
+
+            case '3':
+                if(userLiked) return `You, ${otherLikes[0]} and 1 other`;   
+                else return `${likeUsers[0]}, ${likeUsers[1]} and 1 other`;
+
+            default:
+                if(userLiked) return `You, ${otherLikes[0]} and ${showLikes(likeCount - 2)} others`;
+                else return `${likeUsers[0]}, ${likeUsers[1]} and ${showLikes(likeCount - 2)} others`;
+        }
     }
 
     return (
@@ -79,7 +104,8 @@ export function Post({ postInfo, myUsername, setReload, disable}) {
             <ImgLike>
                 <img src={picture} alt="profile" />
                 {liked()}
-                <span>{showLikes()} likes</span>
+                <span data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
+                <Tooltip id="likes-tooltip" />
             </ImgLike>
             <ContentContainer>
                 <NameConfigPost>
