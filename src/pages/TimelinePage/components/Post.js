@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
 import { Link } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
 
 export function Post({ postInfo, myUsername }) {
     /* eslint-disable */
@@ -31,11 +32,38 @@ export function Post({ postInfo, myUsername }) {
         }
     }
 
-    function showLikes() {
-        if (!qtt_likes) return "0";
-        else if (qtt_likes < 1000) return qtt_likes;
-        else if (qtt_likes < 1000 * 1000) return Math.floor(qtt_likes / 1000) + " K";
-        else return Math.floor(qtt_likes / (1000 * 1000)) + " M";
+    function showLikes(likes) {
+        if (!likes) return "0";
+        else if (likes < 1000) return likes;
+        else if (likes < 1000 * 1000) return Math.floor(likes / 1000) + " K";
+        else return Math.floor(likes / (1000 * 1000)) + " M";
+    }
+
+    function tooltipContent(){
+        const test={qtt_likes}
+        if(!qtt_likes) return "";
+        else{
+            let loggedUserLiked=false;
+            if(like_users?.includes(myUsername)) loggedUserLiked=true;
+            if(qtt_likes==='1') {
+                console.log('one')
+                return loggedUserLiked?'You': `${like_users[0]}`;
+            } else {
+                const otherLikes=like_users?.splice(like_users.indexOf(myUsername), 1);
+                if(qtt_likes==='2'){
+                    console.log('two')
+                    return loggedUserLiked?`You and ${otherLikes[0]}`: `${otherLikes[0]} and ${otherLikes[1]}`;
+                }else{
+                    if(qtt_likes==='3'){
+                        console.log('3')
+                        return loggedUserLiked?`You, ${otherLikes[0]} and 1 other`: `${otherLikes[0]}, ${otherLikes[1]} and 1 other`;
+                    }
+                    else return loggedUserLiked?`You, ${otherLikes[0]} and ${showLikes(qtt_likes-2)} others`: `${otherLikes[0]}, ${otherLikes[1]} and ${showLikes(qtt_likes-2)} others`;
+                }
+
+            }
+                
+        }
     }
 
     return (
@@ -43,7 +71,8 @@ export function Post({ postInfo, myUsername }) {
             <ImgLike>
                 <img src={picture} alt="profile" />
                 {liked()}
-                <span>{showLikes()} likes</span>
+                <span data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} >{showLikes(qtt_likes)} likes</span>
+                <Tooltip id="likes-tooltip" />
             </ImgLike>
             <ContentContainer>
                 <NameConfigPost>
