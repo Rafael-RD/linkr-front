@@ -28,7 +28,7 @@ export default function Header() {
     <>
       <MyHeader>
         <Link to="/timeline">
-          <h1 onClick={() => navigate("/timeline")}>linkr</h1>
+          <h1>linkr</h1>
         </Link>
         <Search />
         <div
