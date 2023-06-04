@@ -31,7 +31,7 @@ export default function TrendingList() {
 
         {tags.map((t) => (
           <li key={t.name}>
-            <Link to={`/hashtag/${t.name}`} data-test="hashtag"># {t.name}</Link>
+            <Link to={`/hashtag/${t.name}`} data-test="hashtag">#{t.name}</Link>
           </li>
         ))}
       </ul>
