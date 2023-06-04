@@ -162,4 +162,16 @@ const SignupStyle = styled.div`
       color: #ffffff;
     }
   }
+  @media (max-width: 425px) {
+    flex-direction: column;
+    > section {
+      a {
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 20px;
+        text-decoration-line: underline;
+        color: #ffffff;
+      }
+    }
+  }
 `;
