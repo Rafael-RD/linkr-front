@@ -202,7 +202,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                 onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)} />
                 {liked()}
                 <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
-                <Tooltip data-test="tooltip" id="likes-tooltip"
+                <Tooltip  id="likes-tooltip" data-test="tooltip"
                     style={{
                         backgroundColor: "rgba(255, 255, 255, 0.9)",
                         opacity: "1",

@@ -12,6 +12,7 @@ export default function HashtagPage() {
   const { auth } = useContext(AuthContext);
   const { hashtag } = useParams();
   const [postList, setPostList] = useState([]);
+  const [reload, setReload] = useState(false)
 
   useEffect(() => {
     if (auth) {
@@ -42,7 +43,7 @@ export default function HashtagPage() {
                 </LoadingStyle>
               )}
               {postList.map((p) => (
-                <PostCard key={p.id} item={p} />
+                <PostCard key={p.id} item={p} setReload={setReload} postList={postList} setPostList={setPostList}/>
               ))}
             </Listing>
             <TrendingList />
@@ -76,6 +77,7 @@ const Listing = styled.ul`
   gap: 16px;
   li {
     width: 611px;
+    max-width: 611px;
     min-height: 276px;
     height: 276px;
     max-height: 276px;

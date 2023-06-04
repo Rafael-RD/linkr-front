@@ -1,13 +1,17 @@
-import { useContext, useEffect, useState } from "react";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import axios from "axios";
+import { useContext, useEffect, useRef, useState } from "react";
+import { AiFillDelete, AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import styled from "styled-components";
 import HashtagDescription from "../../../components/HashtagDescription";
 import AuthContext from "../../../context/auth.context";
 import { getMetadata } from "../../../utils/metadataRequest";
+import Modal from "react-modal";
+import { TiPencil } from "react-icons/ti";
 
-export default function PostCard({ item }) {
+export default function PostCard({ item, setReload, postList, setPostList }) {
+  const focusEdit = useRef();
   const { auth } = useContext(AuthContext);
   const myUsername = auth.username;
   const {
@@ -25,6 +29,10 @@ export default function PostCard({ item }) {
   const [likeCount, setLikeCount] = useState(qtt_likes);
   const [likeUsers, setLikeUsers] = useState(like_users);
   const [updateMetadata, setUpdateMetadata] = useState(linkMetadata);
+  const [editOn, setEditOn] = useState(false);
+  const [descriptionEdit, setDescriptionEdit] = useState(description);
+  const [lastDescription, setLastDescription] = useState(description);
+  const [modalIsOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     if (!linkMetadata) {
@@ -71,8 +79,96 @@ export default function PostCard({ item }) {
     else return Math.floor(likes / (1000 * 1000)) + " M";
   }
 
+  async function editPost() {
+    if (!editOn) {
+      setEditOn(true);
+    } else {
+      setEditOn(false);
+      setDescriptionEdit(lastDescription);
+    }
+  }
+
+  function handleChange(e) {
+    setDescriptionEdit(e.target.value);
+  }
+
+  async function handleKeyPress(event) {
+    if (event.key === "Enter") {
+      setEditOn(false);
+      pacthPostEdit();
+    }
+  }
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  function pacthPostEdit() {
+    const config = {
+      headers: { Authorization: `Bearer ${auth.token}` },
+    };
+
+    const objeto = {
+      description: descriptionEdit,
+      postId: id,
+    };
+    axios
+      .patch(`${process.env.REACT_APP_API_URL}/post`, objeto, config)
+      .then((res) => {
+        setLastDescription(descriptionEdit);
+      })
+      .catch((err) => {
+        alert("Houve um erro ao editar seu post");
+        console.log(err.message);
+      });
+  }
+
+  function deletePost() {
+    const config = {
+      headers: { Authorization: `Bearer ${auth.token}` },
+    };
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/post/${id}`, config)
+      .then((res) => {
+        setReload(true);
+        const updatedArr = [...postList].filter(e => e.id !== id)
+        setPostList(updatedArr)
+      })
+      .catch((err) => {
+        alert("Houve um erro ao deletar seu post");
+        console.log(err.message);
+      });
+  }
+
   return (
     <li data-test="post">
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <h2>Are you sure you want to delete this post?</h2>
+        <div>
+          <button className="back" data-test="cancel" onClick={closeModal}>
+            No, go back
+          </button>
+          <button
+          data-test="confirm"
+            className="delete"
+            onClick={() => {
+              closeModal();
+              deletePost();
+            }}
+          >
+            Yes, delete it
+          </button>
+        </div>
+      </Modal>
       <ItemNav>
         <img
           src={picture}
@@ -108,10 +204,33 @@ export default function PostCard({ item }) {
         </LikeInfo>
       </ItemNav>
       <PostInfo>
-        <Link to={`/user/${userId}`}>
-          <h6 data-test="username">{userName}</h6>
+        <NameConfig>
+          <Link to={`/user/${userId}`} data-test="username">
+            {userName}
           </Link>
-        <HashtagDescription description={description} />
+          <PostConfig hide={myUsername === userName}>
+            <TiPencil data-test="edit-btn" onClick={editPost} color="white" />
+            <AiFillDelete
+              data-test="delete-btn"
+              onClick={openModal}
+              color="white"
+            />
+          </PostConfig>
+        </NameConfig>
+        {editOn ? (
+          <textarea
+            ref={focusEdit}
+            type="text"
+            placeholder={descriptionEdit}
+            value={descriptionEdit}
+            disabled={!editOn}
+            onChange={handleChange}
+            onKeyPress={handleKeyPress}
+            data-test="edit-input"
+          />
+        ) : (
+          <HashtagDescription description={descriptionEdit} />
+        )}
         <Link to={link} target="_blank" data-test="link">
           <MetaDataContainer>
             <div>
@@ -149,6 +268,7 @@ const ItemNav = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 19px;
+  min-width: 50px;
   img {
     min-width: 50px;
     width: 50px;
@@ -257,13 +377,15 @@ const PostInfo = styled.div`
   flex-direction: column;
   justify-content: space-between;
   gap: 7px;
-  width: 100%;
-  h6 {
+  max-width: 503px;
+  width: 503px;
+  a {
     font-size: 19px;
     line-height: 23px;
     color: #ffffff;
   }
-  p {
+  p,
+  textarea {
     font-size: 17px;
     line-height: 20px;
     font-weight: 400;
@@ -272,5 +394,45 @@ const PostInfo = styled.div`
       font-weight: 700;
       color: white;
     }
+  }
+  textarea {
+    color: black;
+  }
+`;
+
+const customStyles = {
+  content: {
+    position: "absolute",
+    top: "calc(50% - 131px)",
+    left: "calc(50% - 298px)",
+    right: "auto",
+    bottom: "auto",
+    width: "597px",
+    height: "262px",
+    background: "#333333",
+    borderRadius: "50px",
+  },
+};
+
+const PostConfig = styled.div`
+  display: ${(prop) => (prop.hide ? "flex" : "none")};
+  gap: 10px;
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+`;
+
+const NameConfig = styled.div`
+  display: flex;
+  justify-content: space-between;
+  a {
+    max-width: 80%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 400;
+    font-size: 19px;
+    line-height: 23px;
+    color: #ffffff;
   }
 `;
