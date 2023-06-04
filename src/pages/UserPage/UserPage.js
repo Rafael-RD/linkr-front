@@ -31,7 +31,7 @@ export default function UserPage() {
                 });
         } else setLoading(false);
         setReload(false)
-    }, [reload]);
+    }, [reload, params]);
 
     function showTimeline() {
         if (loading && !posts.length) {

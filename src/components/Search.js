@@ -12,8 +12,10 @@ export default function Search() {
     const [noUser, setNoUser] = useState()
     const { auth } = useContext(AuthContext);
     const navigate=useNavigate();
+    const [searchValue, setSearchValue] = useState({search:''})
 
     async function evento(value) {
+        setSearchValue({ search: value })
         const valor = { search: value }
         const config = {
             headers: { Authorization: `Bearer ${auth.token}` }
@@ -42,6 +44,12 @@ export default function Search() {
             setBorder("normal")
         }
     }
+    function handleClick(id){
+        setSearchValue({search: ""})
+        setSearch(0)
+        navigate(`/user/${id}`)
+        setBorder("normal")
+    }
 
     return (
         <TotalContainer>
@@ -56,6 +64,7 @@ export default function Search() {
                             onChange={event => {
                                 evento(event.target.value);
                             }}
+                            value={searchValue.search}
                         />
                     </div>
                     <div>
@@ -66,7 +75,7 @@ export default function Search() {
             {search ? (
                 <UsersContainer>
                     {search?.map((user) =>
-                        <Users data-test="user-search" onClick={()=>navigate(`/user/${user.id}`)} >
+                        <Users data-test="user-search" onClick={()=>handleClick(user.id)} key={user.id}>
                             <img src={user?.picture} alt={user?.userName || 'Username'} />
                             <p>{user?.userName}</p>
                         </Users>

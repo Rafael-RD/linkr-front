@@ -5,7 +5,7 @@ import {
 } from "react-icons/md";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/auth.context";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Search from "./Search";
 
 export default function Header() {
@@ -27,8 +27,10 @@ export default function Header() {
   return (
     <>
       <MyHeader>
-        <h1 onClick={()=> navigate("/timeline")}>linkr</h1>
-        <Search/>
+        <Link to="/timeline">
+          <h1>linkr</h1>
+        </Link>
+        <Search />
         <div
           onClick={() => (anim === "120%" ? setAnim("50%") : setAnim("120%"))}
         >
@@ -48,15 +50,15 @@ export default function Header() {
           />
         </div>
       </MyHeader>
-      
+
       <Holder transform={anim}>
         <div data-test="menu">
-          <p onClick={logout} data-test="logout">Logout</p>
-        </div>
-        <section >
-          <p onClick={logout} >
+          <p onClick={logout} data-test="logout">
             Logout
           </p>
+        </div>
+        <section>
+          <p onClick={logout}>Logout</p>
         </section>
       </Holder>
     </>
@@ -75,6 +77,9 @@ const MyHeader = styled.header`
   background-color: #151515;
   padding: 0px 17px;
   z-index: 99;
+  a {
+    text-decoration: none;
+  }
   h1 {
     font-family: "Passion One";
     font-style: normal;
@@ -85,12 +90,12 @@ const MyHeader = styled.header`
     color: #ffffff;
     cursor: pointer;
   }
-  >div:last-child{
+  > div:last-child {
     display: flex;
     align-items: center;
     cursor: pointer;
     gap: 15px;
-    >img {
+    > img {
       object-fit: cover;
       border-radius: 50%;
       height: 53px;
