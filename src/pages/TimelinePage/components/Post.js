@@ -181,8 +181,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
             >
                 <h2 >Are you sure you want to delete this post?</h2>
                 <div>
-                    <button className="back" onClick={closeModal}>No, go back</button>
-                    <button className="delete" onClick={() => { closeModal(); deletePost(); }}>Yes, delete it</button>
+                    <button data-test="cancel" className="back" onClick={closeModal}>No, go back</button>
+                    <button data-test="confirm" className="delete" onClick={() => { closeModal(); deletePost(); }}>Yes, delete it</button>
                 </div>
             </Modal>
             <ImgLike>
@@ -208,7 +208,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                 </NameConfigPost>
                 {
                     editOn ?
-                    <textarea ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyPress={handleKeyPress} /> :
+                    <textarea ata-test="edit-input" ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyPress={handleKeyPress} /> :
                     <HashtagDescription description={descriptionEdit} />
                 }
                 <Link data-test="link" to={link} target="_blank" >
