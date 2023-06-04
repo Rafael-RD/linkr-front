@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import styled from "styled-components"
 import AuthContext from "../../../context/auth.context.js";
 import axios from "axios";
-import { Post } from "./Post.js";
+import { Post } from "../../../components/Post.js";
 
 export function Timeline({reload, setReload, posts, setPosts}) {
     const { auth } = useContext(AuthContext);
@@ -15,7 +15,6 @@ export function Timeline({reload, setReload, posts, setPosts}) {
         if (auth) {
             axios.get(`${process.env.REACT_APP_API_URL}/timeline`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then(resp => {
-                    console.log(resp.data);
                     setPosts(resp.data);
                     setLoading(false);
                 })

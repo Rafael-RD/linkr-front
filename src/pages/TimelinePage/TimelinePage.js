@@ -60,7 +60,7 @@ export default function TimelinePage() {
                 <PostContent data-test="publish-box">
                     <img src={auth?.picture}
                     alt="Imagem do Usuário"
-                    onClick={()=>setForm({link: "https://teste.com", description: `testando um bagulhinho aqui de leve ${(new Date).toString()} #paz`})}/>
+                    onClick={()=>setForm({link: "https://teste.com", description: `testando um bagulhinho aqui de leve ${(new Date()).toString()} #paz`})}/>
                     <form onSubmit={postLink}>
                         <p>What are you going to share today?</p>
                         <input

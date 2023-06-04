@@ -1,16 +1,18 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import styled from "styled-components";
 import HashtagDescription from "../../../components/HashtagDescription";
 import AuthContext from "../../../context/auth.context";
+import { getMetadata } from "../../../utils/metadataRequest";
 
 export default function PostCard({ item }) {
   const { auth } = useContext(AuthContext);
   const myUsername = auth.username;
   const {
     id,
+    userId,
     picture,
     hasLiked,
     qtt_likes,
@@ -22,6 +24,17 @@ export default function PostCard({ item }) {
   } = item;
   const [likeCount, setLikeCount] = useState(qtt_likes);
   const [likeUsers, setLikeUsers] = useState(like_users);
+  const [updateMetadata, setUpdateMetadata] = useState(linkMetadata);
+
+  useEffect(() => {
+    if (!linkMetadata) {
+      metadataUpdate();
+    }
+  }, []);
+  async function metadataUpdate() {
+    const update = await getMetadata(link);
+    setUpdateMetadata(update);
+  }
 
   function tooltipContent() {
     if (!Number(likeCount)) return null;
@@ -95,26 +108,28 @@ export default function PostCard({ item }) {
         </LikeInfo>
       </ItemNav>
       <PostInfo>
-        <h6 data-test="username">{userName}</h6>
+        <Link to={`/user/${userId}`}>
+          <h6 data-test="username">{userName}</h6>
+          </Link>
         <HashtagDescription description={description} />
         <Link to={link} target="_blank" data-test="link">
           <MetaDataContainer>
             <div>
               <h4>
-                {linkMetadata?.myTitle ||
+                {updateMetadata?.myTitle ||
                   "Não foi possivel obter informações do link"}
               </h4>
-              <p>{linkMetadata?.description || ""}</p>
+              <p>{updateMetadata?.description || ""}</p>
               <span>{link}</span>
             </div>
             <section>
               <img
                 src={
-                  !linkMetadata
+                  !updateMetadata
                     ? "https://thumbs.dreamstime.com/b/website-under-construction-internet-error-page-not-found-webpage-maintenance-error-page-not-found-message-technical-website-under-143040659.jpg"
-                    : linkMetadata.image
-                    ? `${link}${linkMetadata?.image}`
-                    : linkMetadata["og:image"] || linkMetadata.myFavIcon
+                    : updateMetadata.image
+                    ? `${link}${updateMetadata?.image}`
+                    : updateMetadata["og:image"] || updateMetadata.myFavIcon
                 }
                 alt="link-display"
                 onError={(e) =>
