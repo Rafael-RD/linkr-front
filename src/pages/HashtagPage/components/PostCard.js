@@ -33,6 +33,8 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
   const [descriptionEdit, setDescriptionEdit] = useState(description);
   const [lastDescription, setLastDescription] = useState(description);
   const [modalIsOpen, setIsOpen] = useState(false);
+  const [userLikedThisPost, setUserLikedThisPost] = useState(hasLiked);
+  let disable = false;
 
   useEffect(() => {
     if (!linkMetadata) {
@@ -135,12 +137,43 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
       .delete(`${process.env.REACT_APP_API_URL}/post/${id}`, config)
       .then((res) => {
         setReload(true);
-        const updatedArr = [...postList].filter(e => e.id !== id)
-        setPostList(updatedArr)
+        const updatedArr = [...postList].filter((e) => e.id !== id);
+        setPostList(updatedArr);
       })
       .catch((err) => {
         alert("Houve um erro ao deletar seu post");
         console.log(err.message);
+      });
+  }
+
+  function like() {
+    const post = String(id);
+    const config = {
+      headers: { Authorization: `Bearer ${auth.token}` },
+    };
+    if (disable) return;
+    disable = true;
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/likes/${post}`, {}, config)
+      .then((res) => {
+        disable = false;
+        let like_users_copy = [];
+        if (like_users) {
+          like_users_copy = [...like_users];
+        }
+        if (res.data[0]?.user_liked && !like_users_copy.includes(myUsername)) {
+          like_users_copy.push(myUsername);
+        }
+        if (!res.data[0]?.user_liked && like_users_copy.includes(myUsername)) {
+          like_users_copy = like_users_copy.filter((e) => e !== myUsername);
+        }
+        setLikeCount(res.data[0]?.qtt_likes || 0);
+        setLikeUsers(like_users_copy);
+        setUserLikedThisPost(!userLikedThisPost)
+      })
+      .catch((err) => {
+        alert(err.message);
+        disable = false;
       });
   }
 
@@ -158,7 +191,7 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
             No, go back
           </button>
           <button
-          data-test="confirm"
+            data-test="confirm"
             className="delete"
             onClick={() => {
               closeModal();
@@ -178,10 +211,20 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
           }
         />
         <LikeInfo>
-          {hasLiked ? (
-            <AiFillHeart color={"red"} size={20} data-test="like-btn" />
+          {userLikedThisPost ? (
+            <AiFillHeart
+              color={"red"}
+              size={20}
+              data-test="like-btn"
+              onClick={!disable ? like : null}
+            />
           ) : (
-            <AiOutlineHeart color={"white"} size={20} data-test="like-btn" />
+            <AiOutlineHeart
+              color={"white"}
+              size={20}
+              data-test="like-btn"
+              onClick={!disable ? like : null}
+            />
           )}
           <p
             data-test="counter"
@@ -189,7 +232,7 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
             data-tooltip-content={tooltipContent()}
             data-tooltip-place="bottom"
           >
-            {qtt_likes} likes
+            {showLikes(likeCount)} likes
           </p>
           <Tooltip
             data-test="tooltip"
