@@ -243,6 +243,7 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
               color: "#282829",
               borderRadius: "17px",
             }}
+            afterShow={()=>document.querySelector('#likes-tooltip').setAttribute('data-test','tooltip')}
           />
         </LikeInfo>
       </ItemNav>
