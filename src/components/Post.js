@@ -219,7 +219,9 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                         opacity: "1",
                         color: "#282829",
                         borderRadius: "17px",
-                    }} />
+                    }} 
+                    afterShow={()=>document.querySelector('#likes-tooltip').setAttribute('data-test','tooltip')}
+                    />
             </ImgLike>
             <ContentContainer edit={editOn}>
                 <NameConfigPost>
