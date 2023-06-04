@@ -220,7 +220,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                 </NameConfigPost>
                 {
                     editOn ?
-                    <textarea ata-test="edit-input" ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyPress={handleKeyPress} /> :
+                    <textarea data-test="edit-input" ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyPress={handleKeyPress} /> :
                     <HashtagDescription description={descriptionEdit} />
                 }
                 <Link data-test="link" to={link} target="_blank" >
