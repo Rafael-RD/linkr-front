@@ -5,6 +5,7 @@ import AuthContext from "../../context/auth.context";
 import { Timeline } from "./components/Timeline.js";
 import TrendingList from "../../components/TrendingList";
 import { PublishPost } from "./components/PublishPost";
+import Search from "../../components/Search";
 
 export default function TimelinePage() {
     const [reload, setReload] = useState(false);
@@ -49,7 +50,6 @@ const TimeLineContainer = styled.div`
     h1{
         margin-left: 17px;
         margin-bottom: 10px;
-        margin-top: 3px;
         font-size: 33px;
         line-height: 49px;
     }
@@ -62,7 +62,6 @@ const ContentContainer = styled.div`
     flex-direction: column;
     width: 611px;
     height: 100%;
-    background-color: lightblue;
     h1{
         font-family: 'Oswald', sans-serif;
         color: white;
@@ -81,6 +80,7 @@ const Wrapper =styled.div`
 `
 const Container = styled.div`
     margin-top: 53px;
-    background-color: lightcoral;
-
+    @media (max-width: 425px) {
+    margin-top: 20px;
+  }
 `

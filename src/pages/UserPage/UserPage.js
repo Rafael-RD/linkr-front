@@ -112,6 +112,17 @@ const PageTitle = styled.div`
         font-size: 43px;
         width: 100%;
     }
+    @media (max-width: 425px) {
+        gap: 15px;
+        margin-left: 15px;
+    img{
+        width: 45px;
+        height: 45px;
+    }
+    h1{
+        font-size: 33px;
+    }
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -129,6 +140,10 @@ const ContentContainer = styled.div`
         font-size: 43px;
         width: 100%;
     }
+    @media (max-width: 425px) {
+    width: 100%;
+    max-width: 425px;
+  }
 `
 
 const Wrapper = styled.div`
