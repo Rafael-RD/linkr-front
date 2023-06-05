@@ -2,13 +2,14 @@ import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
 import { Link, NavLink } from "react-router-dom";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import axios from "axios";
 import Modal from 'react-modal';
 import { Tooltip } from "react-tooltip";
 import { useContext, useState } from "react";
 import AuthContext from "../context/auth.context.js";
 import HashtagDescription from "./HashtagDescription.js";
+import { getMetadata } from "../utils/metadataRequest.js";
 
 export function Post({ postInfo, myUsername, setReload, disable }) {
     /* eslint-disable */
@@ -34,6 +35,17 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     const { auth } = useContext(AuthContext);
     const [likeCount, setLikeCount] = useState(qtt_likes)
     const [likeUsers, setLikeUsers] = useState(like_users)
+    const [updateMetadata, setUpdateMetadata] = useState(linkMetadata)
+
+    useEffect(()=> {
+        if(!linkMetadata){
+            metadataUpdate()
+        }
+    },[])
+    async function metadataUpdate(){
+        const update = await getMetadata(link)
+        setUpdateMetadata(update)
+    }
 
     function like() {
 
@@ -107,6 +119,13 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
     }
 
+    useEffect(() =>{
+        if(editOn){
+            focusEdit.current.focus()
+            focusEdit.current.setSelectionRange(descriptionEdit.length, descriptionEdit.length)
+        }
+    }, [editOn]);
+
     async function editPost() {
         if (!editOn) {
             setEditOn(true);
@@ -124,6 +143,10 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         if (event.key === 'Enter') {
             setEditOn(false);
             pacthPostEdit()
+        }
+        if (event.key === "Escape" || event.key === "Esc") {
+            setEditOn(false);
+            setDescriptionEdit(lastDescription);
         }
     }
 
@@ -181,8 +204,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
             >
                 <h2 >Are you sure you want to delete this post?</h2>
                 <div>
-                    <button className="back" onClick={closeModal}>No, go back</button>
-                    <button className="delete" onClick={() => { closeModal(); deletePost(); }}>Yes, delete it</button>
+                    <button data-test="cancel" className="back" onClick={closeModal}>No, go back</button>
+                    <button data-test="confirm" className="delete" onClick={() => { closeModal(); deletePost(); }}>Yes, delete it</button>
                 </div>
             </Modal>
             <ImgLike>
@@ -190,13 +213,15 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                 onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)} />
                 {liked()}
                 <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
-                <Tooltip data-test="tooltip" id="likes-tooltip"
+                <Tooltip  id="likes-tooltip" data-test="tooltip"
                     style={{
                         backgroundColor: "rgba(255, 255, 255, 0.9)",
                         opacity: "1",
                         color: "#282829",
                         borderRadius: "17px",
-                    }} />
+                    }} 
+                    afterShow={()=>document.querySelector('#likes-tooltip').setAttribute('data-test','tooltip')}
+                    />
             </ImgLike>
             <ContentContainer edit={editOn}>
                 <NameConfigPost>
@@ -208,21 +233,21 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                 </NameConfigPost>
                 {
                     editOn ?
-                    <textarea ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyPress={handleKeyPress} /> :
+                    <textarea data-test="edit-input" ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyDown={handleKeyPress} /> :
                     <HashtagDescription description={descriptionEdit} />
                 }
                 <Link data-test="link" to={link} target="_blank" >
                     <CardMetadata>
                         <div>
-                            <h2>{linkMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
-                            <p>{linkMetadata?.description || ""}</p>
+                            <h2>{updateMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
+                            <p>{updateMetadata?.description || ""}</p>
                             <span>{link}</span>
                         </div>
-                        <img src={!linkMetadata ?
+                        <img src={!updateMetadata ?
                             "https://thumbs.dreamstime.com/b/website-under-construction-internet-error-page-not-found-webpage-maintenance-error-page-not-found-message-technical-website-under-143040659.jpg" :
-                            linkMetadata.image ?
-                                `${link}${linkMetadata?.image}` :
-                                linkMetadata["og:image"] || linkMetadata.myFavIcon}
+                            updateMetadata.image ?
+                                `${link}${updateMetadata?.image}` :
+                                updateMetadata["og:image"] || updateMetadata.myFavIcon}
                             onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)}
                             alt="link" />
                     </CardMetadata>
@@ -243,6 +268,7 @@ const customStyles = {
         height: "262px",
         background: "#333333",
         borderRadius: "50px",
+        zIndex: 999999,
     },
 };
 
@@ -312,11 +338,11 @@ const ContentContainer = styled.div`
         overflow: auto;
     }
 
-    span{
+    p{
         font-family: 'Lato', sans-serif;
-        font-weight: 700;
+        font-weight: 400;
         font-size: 20px;
-        color: #FFFFFF;
+        color: #B7B7B7;
     }
 
     a{

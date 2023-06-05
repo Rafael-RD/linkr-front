@@ -25,7 +25,7 @@ export default function HashtagDescription(props) {
         if (fragment.includes("#")) {
           const hashtag = fragment.substring(1);
           return (
-            <NavLink key={index} to={`/hashtag/${hashtag}`}>
+            <NavLink key={index} to={`/hashtag/${hashtag}`} data-test="hashtag">
               {fragment}
             </NavLink>
           );

@@ -11,6 +11,7 @@ body{
         flex-direction: column;
         align-items: center;
         justify-content: center;
+        z-index: 99999999;
         h2{
             font-family: Lato;
             font-size: 34px;
@@ -35,6 +36,9 @@ body{
             background-color: #1877F2;
             color: #FFFFFF;
         }
+    }
+    .ReactModal__Overlay{
+        z-index: 99999;
     }
 }
 `;

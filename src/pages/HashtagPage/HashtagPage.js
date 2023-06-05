@@ -12,6 +12,7 @@ export default function HashtagPage() {
   const { auth } = useContext(AuthContext);
   const { hashtag } = useParams();
   const [postList, setPostList] = useState([]);
+  const [reload, setReload] = useState(false);
 
   useEffect(() => {
     if (auth) {
@@ -42,7 +43,13 @@ export default function HashtagPage() {
                 </LoadingStyle>
               )}
               {postList.map((p) => (
-                <PostCard key={p.id} item={p} />
+                <PostCard
+                  key={p.id}
+                  item={p}
+                  setReload={setReload}
+                  postList={postList}
+                  setPostList={setPostList}
+                />
               ))}
             </Listing>
             <TrendingList />
@@ -76,6 +83,7 @@ const Listing = styled.ul`
   gap: 16px;
   li {
     width: 611px;
+    max-width: 611px;
     min-height: 276px;
     height: 276px;
     max-height: 276px;
@@ -87,6 +95,17 @@ const Listing = styled.ul`
     font-family: "Lato", sans-serif;
     font-style: normal;
     font-weight: 400;
+  }
+  @media (max-width: 425px) {
+    li {
+      width: 100%;
+      max-width: 100%;
+      min-height: auto;
+      height: auto;
+      max-height: 100%;
+      border-radius: 0px;
+      justify-content: space-between;
+    }
   }
 `;
 
@@ -104,6 +123,16 @@ const Wrapper = styled.div`
     margin-top: 53px;
     color: #ffffff;
     width: 100%;
+  }
+  @media (max-width: 425px) {
+    gap: 19px;
+    width: 100%;
+    h2 {
+      font-size: 33px;
+      line-height: 49px;
+      padding-left: 17px;
+      margin-top: 19px;
+    }
   }
 `;
 
@@ -124,5 +153,8 @@ const LoadingStyle = styled.div`
   svg {
     align-self: end;
     justify-self: end;
+  }
+  @media (max-width: 611px) {
+    width: 100%;
   }
 `;

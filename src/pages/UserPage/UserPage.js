@@ -21,7 +21,6 @@ export default function UserPage() {
         if (auth) {
             axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then(resp => {
-                    console.log(resp.data);
                     setPosts(resp.data);
                     setLoading(false);
                 })
@@ -32,7 +31,7 @@ export default function UserPage() {
                 });
         } else setLoading(false);
         setReload(false)
-    }, [reload]);
+    }, [reload, params]);
 
     function showTimeline() {
         if (loading && !posts.length) {
@@ -71,7 +70,7 @@ export default function UserPage() {
                                 <img src={posts[0].picture} alt="user" />
                                 <h1>{posts[0].userName}</h1>
                             </> :
-                            <h1>timeline</h1>}
+                            <h1>Loading...</h1>}
                     </PageTitle>
                     <Wrapper>
                         <ContentContainer>
@@ -91,8 +90,6 @@ const TimeLineContainer = styled.div`
     align-items: center;
     color: white;
     padding-bottom: 80px;
-    
-    
 `;
 
 const PageTitle = styled.div`
@@ -124,7 +121,6 @@ const ContentContainer = styled.div`
     height: 100%;
     align-items: center;
     gap: 20px;
-    margin-top: 30px;
 
     h1{
         font-family: 'Oswald', sans-serif;
@@ -134,72 +130,11 @@ const ContentContainer = styled.div`
         width: 100%;
     }
 `
-const PostContent = styled.div`
-    width: 100%;
-    max-width: 611px;
-    height: 209px;
-    border-radius: 16px;
-    background-color: white;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-evenly;
-    padding: 16px;
-    img{
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-    form{
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        input, p, textarea{
-            width: 503px;
-            height: 30px;
-            border-radius: 5px;
-            background-color: #EFEFEF;
-            border: none;
-            margin-bottom: 5px;
-            font-family: 'Lato', sans-serif;
-            font-weight: 300;
-            line-height: 18px;
-            padding: 10px;
-        }
-        p {
-            background-color: white;
-            height: 40px;
-            font-size: 20px;
-            color: #707070;
-            line-height: 24px;
-            margin-bottom: 0px;
-        }
-        textarea{
-            display: flex;
-            height: 66px;
-            resize: none;
-        }
-        button{
-            width: 112px;
-            height: 31px;
-            background-color: #1877f2;
-            border-radius: 5px;
-            border: none;
-            position: absolute;
-            bottom: 0px;
-            right: 0px;
-            font-family: 'Lato', sans-serif;
-            font-weight: 700;
-            font-size: 14px;
-            color: white;
-            cursor: pointer;
 
-        }       
-    }
-`
 const Wrapper = styled.div`
   display: flex;
   gap: 41px;
+  margin-top: 30px;
 `
 const Container = styled.div`
     margin-top: 53px;
