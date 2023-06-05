@@ -83,6 +83,9 @@ const TrendingListStyle = styled.div`
       display: flex;
     }
   }
+  @media (max-width: 425px) {
+    display: none;
+  }
 `;
 
 const LoadingStyle = styled.div`

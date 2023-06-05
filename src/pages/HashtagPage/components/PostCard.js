@@ -169,7 +169,7 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
         }
         setLikeCount(res.data[0]?.qtt_likes || 0);
         setLikeUsers(like_users_copy);
-        setUserLikedThisPost(!userLikedThisPost)
+        setUserLikedThisPost(!userLikedThisPost);
       })
       .catch((err) => {
         alert(err.message);
@@ -329,6 +329,13 @@ const ItemNav = styled.div`
   p {
     cursor: default;
   }
+  @media (max-width: 425px) {
+    img {
+      min-width: 40px;
+      width: 40px;
+      min-height: 40px;
+    }
+  }
 `;
 
 const LikeInfo = styled.div`
@@ -395,6 +402,11 @@ const MetaDataContainer = styled.div`
       font-size: 11px;
       line-height: 13px;
       color: #cecece;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
   }
   section {
@@ -412,6 +424,42 @@ const MetaDataContainer = styled.div`
       height: 156px;
       object-fit: cover;
       border-radius: 0px 12px 13px 0px;
+    }
+  }
+  @media (max-width: 425px) {
+    min-height: 115px;
+    height: auto;
+    div {
+      padding: 7px 0px 8px 11px;
+      max-width: 62%;
+      h4 {
+        font-weight: 400;
+        font-size: 11px;
+        line-height: 13px;
+      }
+      p {
+        margin-top: 0px;
+        font-size: 9px;
+        line-height: 11px;
+        min-height: 11px;
+        max-height: 44px;
+      }
+      span {
+        font-size: 9px;
+        line-height: 11px;
+      }
+    }
+    section {
+      min-width: 36%;
+      width: 36%;
+      height: auto;
+      img {
+        position: static;
+        transform: translate(0%, 0%);
+        min-width: auto;
+        width: 100%;
+        height: 100%;
+      }
     }
   }
 `;
@@ -441,6 +489,16 @@ const PostInfo = styled.div`
   }
   textarea {
     color: black;
+  }
+  @media (max-width: 425px) {
+    width: 80%;
+    max-width: 80%;
+    p,
+    a,
+    textarea {
+      font-size: 15px;
+      line-height: 18px;
+    }
   }
 `;
 
@@ -478,5 +536,9 @@ const NameConfig = styled.div`
     font-size: 19px;
     line-height: 23px;
     color: #ffffff;
+    @media (max-width: 425px) {
+      font-size: 17px;
+      line-height: 20px;
+    }
   }
 `;
