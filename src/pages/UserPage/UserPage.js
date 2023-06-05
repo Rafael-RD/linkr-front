@@ -64,10 +64,7 @@ export default function UserPage() {
     return (
         <>
             <Header />
-            { render ?
-                <Search /> :
-                <></>
-            }
+            { render && <Search />}
             <TimeLineContainer>
                 <Container>
                     <PageTitle>
@@ -119,6 +116,17 @@ const PageTitle = styled.div`
         font-size: 43px;
         width: 100%;
     }
+    @media (max-width: 425px) {
+        gap: 15px;
+        margin-left: 34px;
+    img{
+        width: 45px;
+        height: 45px;
+    }
+    h1{
+        font-size: 33px;
+    }
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -136,13 +144,23 @@ const ContentContainer = styled.div`
         font-size: 43px;
         width: 100%;
     }
+    @media (max-width: 425px) {
+    width: 100%;
+    max-width: 425px;
+  }
 `
 
 const Wrapper = styled.div`
-  display: flex;
-  gap: 41px;
-  margin-top: 30px;
+    display: flex;
+    gap: 41px;
+    margin-top: 30px;
+    @media (max-width: 425px){
+        margin-top: 20px;
+    }
 `
 const Container = styled.div`
     margin-top: 53px;
+    @media (max-width: 425px){
+        margin-top: 20px;
+    }
 `

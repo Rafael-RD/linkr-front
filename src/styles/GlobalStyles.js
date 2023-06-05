@@ -20,13 +20,16 @@ body{
             color: #FFFFFF;
             width: 338px;
         }
+        >div{
+            display: flex;
+            margin-top: 37px;
+            gap: 50px;
+        }
         button{
             width: 134px;
             height: 37px;
             border-radius: 5px;
             border: none;
-            margin-left: 50px;
-            margin-top: 37px;
         }
         .back{
             background-color: #FFFFFF;
@@ -35,6 +38,11 @@ body{
         .delete{
             background-color: #1877F2;
             color: #FFFFFF;
+        }
+        @media (max-width: 425px){
+            >div{
+                gap: 20px
+            }
         }
     }
     .ReactModal__Overlay{

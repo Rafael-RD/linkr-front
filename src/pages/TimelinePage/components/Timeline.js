@@ -65,4 +65,8 @@ const TimelineContainer = styled.div`
     align-items: center;
     gap: 20px;
     margin-top: 30px;
+    @media (max-width: 425px) {
+    width: 100vw;
+  }
+   
 `;

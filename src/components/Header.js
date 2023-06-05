@@ -25,7 +25,7 @@ export default function Header() {
     setAuth(null);
   }
 
-  const render = useMediaQuery({ maxWidth: 425 });
+  const render = useMediaQuery({ minWidth: 426 });
 
   return (
     <>
@@ -33,10 +33,7 @@ export default function Header() {
         <Link to="/timeline">
           <h1>linkr</h1>
         </Link>
-        { render ?
-          <></> :
-          <Search />
-        }
+        { render && <Search />}
         <div
           onClick={() => (anim === "120%" ? setAnim("50%") : setAnim("120%"))}
         >
@@ -143,3 +140,4 @@ const Holder = styled.div`
     display: ${(props) => (props.transform === "50%" ? "none" : "flex")};
   }
 `;
+

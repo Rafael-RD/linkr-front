@@ -98,7 +98,7 @@ const TotalContainer = styled.div`
     z-index: 5;
     @media (max-width: 425px){
         position: static;
-        width: calc(100% - 26px);
+        width: calc(100%);
         padding-left: 13px;
         padding-right: 13px;
         top: auto;

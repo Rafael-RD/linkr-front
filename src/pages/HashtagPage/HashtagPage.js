@@ -35,10 +35,7 @@ export default function HashtagPage() {
   return (
     <>
       <Header />
-      { render ?
-        <Search /> :
-        <></>
-      }
+      { render && <Search />}
       <PageStyle>
         <Wrapper>
           <h2 data-test="hashtag-title"># {hashtag}</h2>
