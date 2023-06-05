@@ -96,6 +96,15 @@ const TotalContainer = styled.div`
     top: 15px;
     position: absolute;
     z-index: 5;
+    @media (max-width: 425px){
+        position: static;
+        width: calc(100%);
+        padding-left: 13px;
+        padding-right: 13px;
+        top: auto;
+        left: auto;
+        margin-top: 15px;
+    }
 `
 
 const InputContainer = styled.div`

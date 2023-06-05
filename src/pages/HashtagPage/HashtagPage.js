@@ -7,6 +7,8 @@ import AuthContext from "../../context/auth.context";
 import tagsServices from "../../services/tagsServices";
 import { ThreeDots } from "react-loader-spinner";
 import PostCard from "./components/PostCard";
+import { useMediaQuery } from "react-responsive";
+import Search from "../../components/Search";
 
 export default function HashtagPage() {
   const { auth } = useContext(AuthContext);
@@ -28,9 +30,12 @@ export default function HashtagPage() {
     }
   }, [hashtag]);
 
+  const render = useMediaQuery({ maxWidth: 425 });
+
   return (
     <>
       <Header />
+      { render && <Search />}
       <PageStyle>
         <Wrapper>
           <h2 data-test="hashtag-title"># {hashtag}</h2>
