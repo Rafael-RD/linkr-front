@@ -114,7 +114,7 @@ const PageTitle = styled.div`
     }
     @media (max-width: 425px) {
         gap: 15px;
-        margin-left: 15px;
+        margin-left: 34px;
     img{
         width: 45px;
         height: 45px;

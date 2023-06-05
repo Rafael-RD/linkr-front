@@ -1,11 +1,9 @@
 import styled from "styled-components";
 import Header from "../../components/Header"
-import { useContext, useState } from "react";
-import AuthContext from "../../context/auth.context";
+import { useState } from "react";
 import { Timeline } from "./components/Timeline.js";
 import TrendingList from "../../components/TrendingList";
 import { PublishPost } from "./components/PublishPost";
-import Search from "../../components/Search";
 
 export default function TimelinePage() {
     const [reload, setReload] = useState(false);
@@ -46,8 +44,8 @@ const TimeLineContainer = styled.div`
         line-height: 64px;
     }
     @media (max-width: 425px) {
-        /* max-width: 425px; */
     h1{
+        width: auto;
         margin-left: 17px;
         margin-bottom: 10px;
         font-size: 33px;

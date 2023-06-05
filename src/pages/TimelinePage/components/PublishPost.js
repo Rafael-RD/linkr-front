@@ -74,8 +74,6 @@ export function PublishPost({reload, setReload, posts, setPosts}) {
         </form>
     </PostContent>
     )
-
-
 }
 const PostContent = styled.div`
     width: 100%;
@@ -112,7 +110,6 @@ const PostContent = styled.div`
         p {
             background-color: white;
             height: 40px;
-            /* vertical-align: top; */
             font-size: 20px;
             color: #707070;
             line-height: 24px;
@@ -138,7 +135,7 @@ const PostContent = styled.div`
             color: white;
             cursor: pointer;
 
-        }       
+        }
     }
     @media (max-width: 425px) {
     width: 100%;
@@ -146,7 +143,6 @@ const PostContent = styled.div`
     justify-content: center;
     padding: 10px 15px 16px 15px;
     border-radius: 0px;
-    /* align-items: center; */
     img{
         display: none;
     }
@@ -155,13 +151,11 @@ const PostContent = styled.div`
         text-align: center;
         height: 30px;
         font-size: 17px;
-        
     }
     form{
         width: 100%;
         input, p, textarea{
             width: 100%;
-            /* background-color: red; */
         }
         button{
             width: 112px;
@@ -173,7 +167,5 @@ const PostContent = styled.div`
             resize: none;
         }
     }
-    
-    
   }
 `
