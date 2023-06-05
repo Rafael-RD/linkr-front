@@ -5,6 +5,8 @@ import AuthContext from "../../context/auth.context";
 import axios from "axios";
 import { Timeline } from "./components/Timeline.js";
 import TrendingList from "../../components/TrendingList";
+import { useMediaQuery } from "react-responsive";
+import Search from "../../components/Search";
 
 export default function TimelinePage() {
     const { auth } = useContext(AuthContext);
@@ -48,10 +50,13 @@ export default function TimelinePage() {
                 })
         }
     }
+    
+    const render = useMediaQuery({ maxWidth: 425 });
 
     return(
         <>
         <Header/>
+        { render ? <Search /> : <></>}
         <TimeLineContainer>
             <Container>
                 <h1>timeline</h1>
@@ -195,4 +200,7 @@ const Wrapper =styled.div`
 `
 const Container = styled.div`
     margin-top: 53px;
+    @media (max-width: 425px){
+        margin-top: 20px;
+    }
 `

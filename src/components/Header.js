@@ -7,6 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import AuthContext from "../context/auth.context";
 import { Link, useNavigate } from "react-router-dom";
 import Search from "./Search";
+import { useMediaQuery } from "react-responsive";
 
 export default function Header() {
   const { auth, setAuth } = useContext(AuthContext);
@@ -24,13 +25,18 @@ export default function Header() {
     setAuth(null);
   }
 
+  const render = useMediaQuery({ maxWidth: 425 });
+
   return (
     <>
       <MyHeader>
         <Link to="/timeline">
           <h1>linkr</h1>
         </Link>
-        <Search />
+        { render ?
+          <></> :
+          <Search />
+        }
         <div
           onClick={() => (anim === "120%" ? setAnim("50%") : setAnim("120%"))}
         >
@@ -50,7 +56,6 @@ export default function Header() {
           />
         </div>
       </MyHeader>
-
       <Holder transform={anim}>
         <div data-test="menu">
           <p onClick={logout} data-test="logout">

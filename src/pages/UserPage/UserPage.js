@@ -6,6 +6,8 @@ import TrendingList from "../../components/TrendingList";
 import { useParams } from "react-router-dom";
 import { Post } from "../../components/Post.js";
 import axios from "axios";
+import { useMediaQuery } from "react-responsive";
+import Search from "../../components/Search";
 
 export default function UserPage() {
     const { auth } = useContext(AuthContext);
@@ -57,10 +59,15 @@ export default function UserPage() {
         }
     }
 
+    const render = useMediaQuery({ maxWidth: 425 });
 
     return (
         <>
             <Header />
+            { render ?
+                <Search /> :
+                <></>
+            }
             <TimeLineContainer>
                 <Container>
                     <PageTitle>
