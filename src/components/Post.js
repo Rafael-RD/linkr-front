@@ -285,7 +285,8 @@ const PostContainer = styled.div`
         color: white;
     }
     @media (max-width: 425px) {
-    border-radius: 0px;   
+    border-radius: 0px;
+    width: 100vw;
   }
 `;
 
