@@ -138,3 +138,4 @@ const Holder = styled.div`
     display: ${(props) => (props.transform === "50%" ? "none" : "flex")};
   }
 `;
+

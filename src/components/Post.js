@@ -284,6 +284,9 @@ const PostContainer = styled.div`
     span, p, svg{
         color: white;
     }
+    @media (max-width: 425px) {
+    border-radius: 0px;   
+  }
 `;
 
 const ImgLike = styled.div`
@@ -429,4 +432,14 @@ const CardMetadata = styled.div`
         width: 155px;
         object-fit: cover;
     }
+    @media (max-width: 425px) {
+        div{
+            max-width: 63%;
+        }
+        img{
+            width: auto;
+            max-width: 33%;
+        }
+       
+  }
 `;
