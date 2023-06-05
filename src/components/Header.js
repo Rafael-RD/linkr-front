@@ -113,6 +113,7 @@ const Holder = styled.div`
     right: 0;
     width: 133px;
     height: 47px;
+    z-index: 30;
     transition: transform 250ms ease-in;
     transform: ${(props) => `translateY(${props.transform})`};
     background: #171717;
