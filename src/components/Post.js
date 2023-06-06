@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { AiFillHeart, AiOutlineHeart, AiFillDelete } from "react-icons/ai";
+import { AiFillHeart, AiOutlineHeart, AiFillDelete, AiOutlineComment } from "react-icons/ai";
 import { TiPencil } from "react-icons/ti";
 import { Link, NavLink } from "react-router-dom";
 import { useEffect, useRef } from "react";
@@ -10,6 +10,7 @@ import { useContext, useState } from "react";
 import AuthContext from "../context/auth.context.js";
 import HashtagDescription from "./HashtagDescription.js";
 import { getMetadata } from "../utils/metadataRequest.js";
+import Comment from "./Comment.js";
 
 export function Post({ postInfo, myUsername, setReload, disable }) {
     /* eslint-disable */
@@ -36,6 +37,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     const [likeCount, setLikeCount] = useState(qtt_likes)
     const [likeUsers, setLikeUsers] = useState(like_users)
     const [updateMetadata, setUpdateMetadata] = useState(linkMetadata)
+    const [openComments, setOpenComments] = useState(false)
+    const [commentHeight, setCommentHeight] = useState("0px");
 
     useEffect(()=> {
         if(!linkMetadata){
@@ -193,69 +196,93 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
             })
     }
 
+    function handleCommentsContainer(){
+        if(openComments){
+            setTimeout(() => {
+                setOpenComments(false);
+            }, 1500);
+            setCommentHeight('0px');
+        } else {
+            setOpenComments(true);
+        }
+    }
+
 
     return (
-        <PostContainer data-test="post" >
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                style={customStyles}
-                contentLabel="Example Modal"
-            >
-                <h2 >Are you sure you want to delete this post?</h2>
-                <div>
-                    <button data-test="cancel" className="back" onClick={closeModal}>No, go back</button>
-                    <button data-test="confirm" className="delete" onClick={() => { closeModal(); deletePost(); }}>Yes, delete it</button>
-                </div>
-            </Modal>
-            <ImgLike>
-                <img src={picture} alt="profile" 
-                onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)} />
-                {liked()}
-                <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
-                <Tooltip  id="likes-tooltip" data-test="tooltip"
-                    style={{
-                        backgroundColor: "rgba(255, 255, 255, 0.9)",
-                        opacity: "1",
-                        color: "#282829",
-                        borderRadius: "17px",
-                    }} 
-                    afterShow={()=>document.querySelector('#likes-tooltip').setAttribute('data-test','tooltip')}
-                    />
-            </ImgLike>
-            <ContentContainer edit={editOn}>
-                <NameConfigPost>
-                    <NavLink data-test="username" to={`/user/${userId}`} >{userName}</NavLink>
-                    <PostConfig hide={myUsername === userName}>
-                        <TiPencil data-test="edit-btn" onClick={editPost} />
-                        <AiFillDelete data-test="delete-btn" onClick={openModal} />
-                    </PostConfig>
-                </NameConfigPost>
-                {
-                    editOn ?
-                    <textarea data-test="edit-input" ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyDown={handleKeyPress} /> :
-                    <HashtagDescription description={descriptionEdit} />
-                }
-                <Link data-test="link" to={link} target="_blank" >
-                    <CardMetadata>
-                        <div>
-                            <h2>{updateMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
-                            <p>{updateMetadata?.description || ""}</p>
-                            <span>{link}</span>
-                        </div>
-                        <img src={!updateMetadata ?
-                            "https://thumbs.dreamstime.com/b/website-under-construction-internet-error-page-not-found-webpage-maintenance-error-page-not-found-message-technical-website-under-143040659.jpg" :
-                            updateMetadata.image ?
-                                `${link}${updateMetadata?.image}` :
-                                updateMetadata["og:image"] || updateMetadata.myFavIcon}
-                            onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)}
-                            alt="link" />
-                    </CardMetadata>
-                </Link>
-            </ContentContainer>
-        </PostContainer>
+        <>
+            <ContainerStyle>
+            <PostContainer data-test="post" >
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    style={customStyles}
+                    contentLabel="Example Modal"
+                >
+                    <h2 >Are you sure you want to delete this post?</h2>
+                    <div>
+                        <button data-test="cancel" className="back" onClick={closeModal}>No, go back</button>
+                        <button data-test="confirm" className="delete" onClick={() => { closeModal(); deletePost(); }}>Yes, delete it</button>
+                    </div>
+                </Modal>
+                <ImgLike>
+                    <img src={picture} alt="profile" 
+                    onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)} />
+                    {liked()}
+                    <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
+                    <Tooltip  id="likes-tooltip" data-test="tooltip"
+                        style={{
+                            backgroundColor: "rgba(255, 255, 255, 0.9)",
+                            opacity: "1",
+                            color: "#282829",
+                            borderRadius: "17px",
+                        }} 
+                        afterShow={()=>document.querySelector('#likes-tooltip').setAttribute('data-test','tooltip')}
+                        />
+                    <AiOutlineComment data-test="comment-btn" onClick={handleCommentsContainer}/>
+                    <span data-test="comment-counter">0 comments</span>
+                </ImgLike>
+                <ContentContainer edit={editOn}>
+                    <NameConfigPost>
+                        <NavLink data-test="username" to={`/user/${userId}`} >{userName}</NavLink>
+                        <PostConfig hide={myUsername === userName}>
+                            <TiPencil data-test="edit-btn" onClick={editPost} />
+                            <AiFillDelete data-test="delete-btn" onClick={openModal} />
+                        </PostConfig>
+                    </NameConfigPost>
+                    {
+                        editOn ?
+                        <textarea data-test="edit-input" ref={focusEdit} type="text" placeholder={descriptionEdit} value={descriptionEdit} disabled={!editOn} onChange={handleChange} onKeyDown={handleKeyPress} /> :
+                        <HashtagDescription description={descriptionEdit} />
+                    }
+                    <Link data-test="link" to={link} target="_blank" >
+                        <CardMetadata>
+                            <div>
+                                <h2>{updateMetadata?.myTitle || "Não foi possivel obter informações do link"}</h2>
+                                <p>{updateMetadata?.description || ""}</p>
+                                <span>{link}</span>
+                            </div>
+                            <img src={!updateMetadata ?
+                                "https://thumbs.dreamstime.com/b/website-under-construction-internet-error-page-not-found-webpage-maintenance-error-page-not-found-message-technical-website-under-143040659.jpg" :
+                                updateMetadata.image ?
+                                    `${link}${updateMetadata?.image}` :
+                                    updateMetadata["og:image"] || updateMetadata.myFavIcon}
+                                onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)}
+                                alt="link" />
+                        </CardMetadata>
+                    </Link>
+                </ContentContainer>
+            </PostContainer>
+            {openComments && <Comment auth={auth} postId={id} height={commentHeight} setHeight={setCommentHeight}/>}
+            </ContainerStyle>
+        </>
     )
 }
+
+const ContainerStyle = styled.div`
+  width: 100%;
+  background: #1e1e1e;
+  border-radius: 16px;
+`;
 
 const customStyles = {
     content: {
@@ -304,14 +331,14 @@ const ImgLike = styled.div`
         object-fit: cover;
     }
     svg{
-        width: 35px;
-        height: 35px;
+        width: 25px;
+        height: 25px;
         cursor: pointer;
     }
     span{
         font-family: 'Lato', sans-serif;
         font-weight: 400;
-        font-size: 14px;
+        font-size: 11px;
         text-align: center;
         word-wrap: break-word;
     }
