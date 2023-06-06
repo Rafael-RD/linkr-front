@@ -17,6 +17,7 @@ export default function Comment({ auth, height, setHeight, postId }) {
   useEffect(() => {
     setHeight("150px");
     setLoading(true);
+    textareaRef.current.style.height = "0px";
     postsServices
       .listComments(auth.token, postId)
       .then(({ data }) => {
@@ -32,14 +33,18 @@ export default function Comment({ auth, height, setHeight, postId }) {
   }, [reload]);
 
   function handleSubmit(e) {
-    e.preventDefault();
+    e?.preventDefault();
     if (!formLoading) {
-      console.log("aqui");
+      if (!form.content.length) {
+        alert("You can't send an empty comment");
+        return;
+      }
       setFormLoading(true);
       postsServices
         .createNewComment(auth.token, postId, form)
         .then(() => {
           setForm({ content: "" });
+          adjustTextareaHeight();
           setReload(!reload);
           setFormLoading(false);
         })
@@ -58,6 +63,14 @@ export default function Comment({ auth, height, setHeight, postId }) {
   function adjustTextareaHeight() {
     textareaRef.current.style.height = "0px";
     textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
+  }
+
+  function handleSubmitOnEnter(e) {
+    if (e.key === "Enter") {
+      if (!e.shiftKey) {
+        handleSubmit();
+      }
+    }
   }
 
   return (
@@ -91,6 +104,7 @@ export default function Comment({ auth, height, setHeight, postId }) {
               onChange={handleChange}
               disabled={loading || formLoading}
               value={form.content}
+              onKeyDown={handleSubmitOnEnter}
             />
             <button
               disabled={loading || formLoading}

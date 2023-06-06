@@ -1,6 +1,11 @@
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
-import { AiFillDelete, AiFillHeart, AiOutlineHeart } from "react-icons/ai";
+import {
+  AiFillDelete,
+  AiFillHeart,
+  AiOutlineComment,
+  AiOutlineHeart,
+} from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import styled from "styled-components";
@@ -9,6 +14,7 @@ import AuthContext from "../../../context/auth.context";
 import { getMetadata } from "../../../utils/metadataRequest";
 import Modal from "react-modal";
 import { TiPencil } from "react-icons/ti";
+import Comment from "../../../components/Comment";
 
 export default function PostCard({ item, setReload, postList, setPostList }) {
   const focusEdit = useRef();
@@ -17,6 +23,7 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
   const {
     id,
     userId,
+    qtt_comments,
     picture,
     hasLiked,
     qtt_likes,
@@ -34,6 +41,8 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
   const [lastDescription, setLastDescription] = useState(description);
   const [modalIsOpen, setIsOpen] = useState(false);
   const [userLikedThisPost, setUserLikedThisPost] = useState(hasLiked);
+  const [openComments, setOpenComments] = useState(false);
+  const [commentHeight, setCommentHeight] = useState("0px");
   let disable = false;
 
   useEffect(() => {
@@ -177,6 +186,17 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
       });
   }
 
+  function handleCommentsContainer() {
+    if (openComments) {
+      setTimeout(() => {
+        setOpenComments(false);
+      }, 1500);
+      setCommentHeight("0px");
+    } else {
+      setOpenComments(true);
+    }
+  }
+
   return (
     <li data-test="post">
       <Modal
@@ -202,117 +222,161 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
           </button>
         </div>
       </Modal>
-      <ItemNav>
-        <img
-          src={picture}
-          alt="user-pic"
-          onError={(e) =>
-            (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)
-          }
-        />
-        <LikeInfo>
-          {userLikedThisPost ? (
-            <AiFillHeart
-              color={"red"}
-              size={20}
-              data-test="like-btn"
-              onClick={!disable ? like : null}
+      <PostContent>
+        <ItemNav>
+          <img
+            src={picture}
+            alt="user-pic"
+            onError={(e) =>
+              (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)
+            }
+          />
+          <LikeInfo>
+            {userLikedThisPost ? (
+              <AiFillHeart
+                color={"red"}
+                size={25}
+                data-test="like-btn"
+                onClick={!disable ? like : null}
+              />
+            ) : (
+              <AiOutlineHeart
+                color={"white"}
+                size={25}
+                data-test="like-btn"
+                onClick={!disable ? like : null}
+              />
+            )}
+            <p
+              data-test="counter"
+              data-tooltip-id="likes-tooltip"
+              data-tooltip-content={tooltipContent()}
+              data-tooltip-place="bottom"
+            >
+              {showLikes(likeCount)} likes
+            </p>
+            <Tooltip
+              data-test="tooltip"
+              id="likes-tooltip"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                opacity: "1",
+                color: "#282829",
+                borderRadius: "17px",
+              }}
+              afterShow={() =>
+                document
+                  .querySelector("#likes-tooltip")
+                  .setAttribute("data-test", "tooltip")
+              }
+            />
+            <AiOutlineComment
+              data-test="comment-btn"
+              onClick={handleCommentsContainer}
+            />
+            <p data-test="comment-counter">{showLikes(qtt_comments)} comments</p>
+          </LikeInfo>
+        </ItemNav>
+        <PostInfo>
+          <NameConfig>
+            <Link to={`/user/${userId}`} data-test="username">
+              {userName}
+            </Link>
+            <PostConfig hide={myUsername === userName}>
+              <TiPencil data-test="edit-btn" onClick={editPost} color="white" />
+              <AiFillDelete
+                data-test="delete-btn"
+                onClick={openModal}
+                color="white"
+              />
+            </PostConfig>
+          </NameConfig>
+          {editOn ? (
+            <textarea
+              ref={focusEdit}
+              type="text"
+              placeholder={descriptionEdit}
+              value={descriptionEdit}
+              disabled={!editOn}
+              onChange={handleChange}
+              onKeyPress={handleKeyPress}
+              data-test="edit-input"
             />
           ) : (
-            <AiOutlineHeart
-              color={"white"}
-              size={20}
-              data-test="like-btn"
-              onClick={!disable ? like : null}
-            />
+            <HashtagDescription description={descriptionEdit} />
           )}
-          <p
-            data-test="counter"
-            data-tooltip-id="likes-tooltip"
-            data-tooltip-content={tooltipContent()}
-            data-tooltip-place="bottom"
-          >
-            {showLikes(likeCount)} likes
-          </p>
-          <Tooltip
-            data-test="tooltip"
-            id="likes-tooltip"
-            style={{
-              backgroundColor: "rgba(255, 255, 255, 0.9)",
-              opacity: "1",
-              color: "#282829",
-              borderRadius: "17px",
-            }}
-            afterShow={()=>document.querySelector('#likes-tooltip').setAttribute('data-test','tooltip')}
-          />
-        </LikeInfo>
-      </ItemNav>
-      <PostInfo>
-        <NameConfig>
-          <Link to={`/user/${userId}`} data-test="username">
-            {userName}
+          <Link to={link} target="_blank" data-test="link">
+            <MetaDataContainer>
+              <div>
+                <h4>
+                  {updateMetadata?.myTitle ||
+                    "Não foi possivel obter informações do link"}
+                </h4>
+                <p>{updateMetadata?.description || ""}</p>
+                <span>{link}</span>
+              </div>
+              <section>
+                <img
+                  src={
+                    !updateMetadata
+                      ? "https://thumbs.dreamstime.com/b/website-under-construction-internet-error-page-not-found-webpage-maintenance-error-page-not-found-message-technical-website-under-143040659.jpg"
+                      : updateMetadata.image
+                      ? `${link}${updateMetadata?.image}`
+                      : updateMetadata["og:image"] || updateMetadata.myFavIcon
+                  }
+                  alt="link-display"
+                  onError={(e) =>
+                    (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)
+                  }
+                />
+              </section>
+            </MetaDataContainer>
           </Link>
-          <PostConfig hide={myUsername === userName}>
-            <TiPencil data-test="edit-btn" onClick={editPost} color="white" />
-            <AiFillDelete
-              data-test="delete-btn"
-              onClick={openModal}
-              color="white"
-            />
-          </PostConfig>
-        </NameConfig>
-        {editOn ? (
-          <textarea
-            ref={focusEdit}
-            type="text"
-            placeholder={descriptionEdit}
-            value={descriptionEdit}
-            disabled={!editOn}
-            onChange={handleChange}
-            onKeyPress={handleKeyPress}
-            data-test="edit-input"
-          />
-        ) : (
-          <HashtagDescription description={descriptionEdit} />
-        )}
-        <Link to={link} target="_blank" data-test="link">
-          <MetaDataContainer>
-            <div>
-              <h4>
-                {updateMetadata?.myTitle ||
-                  "Não foi possivel obter informações do link"}
-              </h4>
-              <p>{updateMetadata?.description || ""}</p>
-              <span>{link}</span>
-            </div>
-            <section>
-              <img
-                src={
-                  !updateMetadata
-                    ? "https://thumbs.dreamstime.com/b/website-under-construction-internet-error-page-not-found-webpage-maintenance-error-page-not-found-message-technical-website-under-143040659.jpg"
-                    : updateMetadata.image
-                    ? `${link}${updateMetadata?.image}`
-                    : updateMetadata["og:image"] || updateMetadata.myFavIcon
-                }
-                alt="link-display"
-                onError={(e) =>
-                  (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)
-                }
-              />
-            </section>
-          </MetaDataContainer>
-        </Link>
-      </PostInfo>
+        </PostInfo>
+      </PostContent>
+      {openComments && (
+        <Comment
+          auth={auth}
+          postId={id}
+          height={commentHeight}
+          setHeight={setCommentHeight}
+        />
+      )}
     </li>
   );
 }
+const PostContent = styled.div`
+  width: 611px;
+  max-width: 611px;
+  min-height: 276px;
+  height: 276px;
+  max-height: 276px;
+  background: #171717;
+  border-radius: 16px;
+  display: flex;
+  gap: 9px;
+  justify-content: space-between;
+  padding: 18px;
+  font-family: "Lato", sans-serif;
+  font-style: normal;
+  font-weight: 400;
+  @media (max-width: 425px) {
+    width: 100%;
+    max-width: 100%;
+    min-height: auto;
+    height: auto;
+    max-height: 100%;
+    border-radius: 0px;
+    justify-content: space-between;
+  }
+`;
 
 const ItemNav = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 19px;
-  min-width: 50px;
+  min-width: 85px;
   img {
     min-width: 50px;
     width: 50px;
@@ -323,8 +387,11 @@ const ItemNav = styled.div`
   }
   svg {
     cursor: pointer;
-    width: 35px;
-    height: 35px;
+    width: 25px;
+    height: 25px;
+    :not(:first-child) {
+      margin-top: 13px;
+    }
   }
   p {
     cursor: default;
@@ -351,6 +418,7 @@ const LikeInfo = styled.div`
     font-size: 11px;
     line-height: 13px;
     text-align: center;
+    overflow-wrap: break-word;
     color: #ffffff;
   }
 `;

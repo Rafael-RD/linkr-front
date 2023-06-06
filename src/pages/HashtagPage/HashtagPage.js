@@ -35,7 +35,7 @@ export default function HashtagPage() {
   return (
     <>
       <Header />
-      { render && <Search />}
+      {render && <Search />}
       <PageStyle>
         <Wrapper>
           <h2 data-test="hashtag-title"># {hashtag}</h2>
@@ -87,30 +87,9 @@ const Listing = styled.ul`
   flex-direction: column;
   gap: 16px;
   li {
-    width: 611px;
-    max-width: 611px;
-    min-height: 276px;
-    height: 276px;
-    max-height: 276px;
-    background: #171717;
+    width: 100%;
+    background: #1e1e1e;
     border-radius: 16px;
-    display: flex;
-    gap: 19px;
-    padding: 18px;
-    font-family: "Lato", sans-serif;
-    font-style: normal;
-    font-weight: 400;
-  }
-  @media (max-width: 425px) {
-    li {
-      width: 100%;
-      max-width: 100%;
-      min-height: auto;
-      height: auto;
-      max-height: 100%;
-      border-radius: 0px;
-      justify-content: space-between;
-    }
   }
 `;
 
