@@ -26,7 +26,6 @@ export default function UserPage() {
 
             axios.get(`${process.env.REACT_APP_API_URL}/getFollow/${params.id}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then((res) => {
-                    console.log(res.data)
                     if(res.data==="yourself") setFollows("yourself")
                     else if(res.data.length > 0) setFollows("Inserted")
                     else if(res.data.length <= 0) setFollows ("Deleted")

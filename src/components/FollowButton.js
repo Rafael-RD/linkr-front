@@ -16,13 +16,10 @@ export default function FollowButton({follows, setFollows}) {
         const config = {
             headers: { Authorization: `Bearer ${auth.token}` }
         }
-        // alert(body.followedId)
         axios.post(`${process.env.REACT_APP_API_URL}/follow`, body, config)
             .then((res) => {
-                console.log(res.data)
                 setFollows(res.data)
                 setDisable(false)
-                // alert(res.data)
             })
             .catch((err) => {
                 alert(err.message)
