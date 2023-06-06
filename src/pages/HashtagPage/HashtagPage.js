@@ -90,6 +90,7 @@ const Listing = styled.ul`
     width: 100%;
     background: #1e1e1e;
     border-radius: 16px;
+    width: 611px;
   }
 `;
 
