@@ -21,7 +21,7 @@ export default function Comment({ auth, height, setHeight, postId }) {
     postsServices
       .listComments(auth.token, postId)
       .then(({ data }) => {
-        const newHeight = data.length ? data.length * 147 : 500;
+        const newHeight = data.length ? data.length * 350 : 500;
         setCommentList(data);
         setHeight(`${newHeight}px`);
         setLoading(false);
@@ -152,11 +152,10 @@ const CommentsContainer = styled.div`
 const CommentInfo = styled.div`
   padding: 16px 0px;
   display: flex;
-  align-items: center;
   gap: 18px;
   border-bottom: 1px solid #353535;
   > div {
-    height: 39px;
+    min-height: 39px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -191,7 +190,6 @@ const CommentInfo = styled.div`
 const NewCommentForm = styled.form`
   padding: 16px 0px 0px;
   display: flex;
-  align-items: center;
   gap: 14px;
   position: relative;
   textarea {
@@ -223,7 +221,9 @@ const NewCommentForm = styled.form`
   }
   button {
     position: absolute;
+    cursor: pointer;
     right: 16px;
+    top: 49%;
     background: none;
     margin: 0px;
     padding: 0px;
