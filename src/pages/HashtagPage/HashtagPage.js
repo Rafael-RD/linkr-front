@@ -15,16 +15,22 @@ export default function HashtagPage() {
   const { hashtag } = useParams();
   const [postList, setPostList] = useState([]);
   const [reload, setReload] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (auth) {
+      setLoading(true);
       setPostList([]);
       tagsServices
         .getTagPostList(auth.token, hashtag)
         .then(({ data }) => {
           setPostList(data);
+          if (data.length === 0) {
+            setLoading(false);
+          }
         })
         .catch((err) => {
+          setLoading(false);
           alert(`Error ${err.response.status}: ${err.response.data}`);
         });
     }
@@ -41,12 +47,16 @@ export default function HashtagPage() {
           <h2 data-test="hashtag-title"># {hashtag}</h2>
           <ContentContainer>
             <Listing>
-              {!postList.length && (
+              {!postList.length && loading && (
                 <LoadingStyle>
                   Loading
                   <ThreeDots height={6} width={18} color="white" />
                 </LoadingStyle>
               )}
+              {!postList.length && !loading && (
+                <LoadingStyle>No posts created using this hashtag</LoadingStyle>
+              )}
+
               {postList.map((p) => (
                 <PostCard
                   key={p.id}
@@ -90,6 +100,7 @@ const Listing = styled.ul`
     width: 100%;
     background: #1e1e1e;
     border-radius: 16px;
+    width: 611px;
   }
 `;
 
