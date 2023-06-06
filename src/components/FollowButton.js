@@ -31,11 +31,11 @@ export default function FollowButton({follows, setFollows}) {
         <>
         {   follows === "yourself" ? <></> :            
             follows === "Inserted" ? 
-            <UnfollowButton disabled={disable} onClick={follow}>
+            <UnfollowButton data-test="follow-btn" disabled={disable} onClick={follow}>
                 Unfollow
             </UnfollowButton> : 
 
-            <FollowButtons disabled={disable} onClick={follow}>
+            <FollowButtons data-test="follow-btn" disabled={disable} onClick={follow}>
                 Follow
             </FollowButtons>    
         }
