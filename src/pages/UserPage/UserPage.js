@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import Header from "../../components/Header"
+import Header from "../../components/Header";
 import { useContext, useState, useEffect } from "react";
 import AuthContext from "../../context/auth.context";
 import TrendingList from "../../components/TrendingList";
@@ -16,8 +16,8 @@ export default function UserPage() {
     const [reload, setReload] = useState(false);
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [error, setError] = useState(false);
-    const [follows, setFollows] = useState()
+    const [error, setError] = useState({});
+    const [follows, setFollows] = useState();
     const params = useParams();
 
     useEffect(() => {
@@ -26,26 +26,25 @@ export default function UserPage() {
 
             axios.get(`${process.env.REACT_APP_API_URL}/getFollow/${params.id}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then((res) => {
-                    if(res.data==="yourself") setFollows("yourself")
-                    else if(res.data.length > 0) setFollows("Inserted")
-                    else if(res.data.length <= 0) setFollows ("Deleted")
+                    if (res.data === "yourself") setFollows("yourself");
+                    else if (res.data.length > 0) setFollows("Inserted");
+                    else if (res.data.length <= 0) setFollows("Deleted");
                     axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                         .then(resp => {
                             setPosts(resp.data);
                             setLoading(false);
                         })
                         .catch(resp => {
-                            console.error(resp);
+                            console.error(resp.response);
                             setLoading(false);
-                            setError(true);
+                            setError(resp.response);
                         });
                 })
                 .catch((err) => {
-                    alert("Error! Was not possible accomplish the operations")
+                    alert("Error! Was not possible accomplish the operations");
                 })
-            
         } else setLoading(false);
-        setReload(false)
+        setReload(false);
     }, [reload, params]);
 
     function showTimeline() {
@@ -53,12 +52,19 @@ export default function UserPage() {
             return (
                 <span data-test="message" >Loading</span>
             )
-        } else if (error) {
-            alert('An error occured while trying to fetch the posts, please refresh the page');
-            return (
-                <span data-test="message" >An error occured while trying to fetch the posts, please refresh the page</span>
-            )
-        } else if (posts.length === 0) {
+        } else if (Object.keys(error).length != 0) {
+            if (error.status === 404) {
+                alert('user not found');
+                return (
+                    <span data-test="message" >user not found</span>
+                )
+            } else {
+                alert('An error occured while trying to fetch the posts, please refresh the page');
+                return (
+                    <span data-test="message" >An error occured while trying to fetch the posts, please refresh the page</span>
+                )
+            }
+        } else if (posts.length === 0 || posts[0].noPosts === true) {
             return (
                 <span data-test="message" >There are no posts yet</span>
             )
@@ -77,7 +83,7 @@ export default function UserPage() {
     return (
         <>
             <Header />
-            { render && <Search />}
+            {render && <Search />}
             <TimeLineContainer>
                 <Container>
                     <PageTitle>
@@ -87,8 +93,9 @@ export default function UserPage() {
                                 <img src={posts[0].picture} alt="user" />
                                 <h1>{posts[0].userName}</h1>
                                 <FollowButton follows={follows} setFollows={setFollows} />
-                            </> :
-                            <h1>Loading...</h1>}
+                            </> : error.status === 404 ?
+                                <h1>User NOT Found</h1> :
+                                <h1>Loading...</h1>}
                     </PageTitle>
                     <Wrapper>
                         <ContentContainer>
