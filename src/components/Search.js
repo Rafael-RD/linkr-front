@@ -78,6 +78,11 @@ export default function Search() {
                         <Users data-test="user-search" onClick={()=>handleClick(user.id)} key={user.id}>
                             <img src={user?.picture} alt={user?.userName || 'Username'} />
                             <p>{user?.userName}</p>
+                            {user.is_following === true ? 
+                                <span>• following</span>
+                            :    
+                            <></>
+                            }
                         </Users>
                     )}
                 </UsersContainer>) : <></>}
@@ -158,6 +163,7 @@ const Users = styled.div`
     background-color: #E7E7E7;
     align-items: center;
     gap: 15px;
+    font-family: 'Lato', sans-serif;
     img{
         width: 39px;
         height: 39px;
@@ -165,7 +171,6 @@ const Users = styled.div`
         margin-left: 11px;
     }
     p{
-        font-family: 'Lato', sans-serif;
         margin-left: 12px;
         font-weight: 400;
         font-size: 19px;
@@ -176,6 +181,12 @@ const Users = styled.div`
     p:hover{
         color: black;
     }
+    span {
+        font-weight: 400;
+        color: #C5C5C5;
+        font-size: 19px;
+        line-height: 23px;
+      }
 `
 
 const SemUser = styled.div`
