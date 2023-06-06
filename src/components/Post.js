@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete, AiOutlineComment } from "react-icons/ai";
+import { FaRetweet } from "react-icons/fa"
 import { TiPencil } from "react-icons/ti";
 import { Link, NavLink } from "react-router-dom";
 import { useEffect, useRef } from "react";
@@ -28,7 +29,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         linkMetadata
     } = postInfo;
     /* eslint-enable */
-    const focusEdit = useRef();
+    const focusEdit = useRef(null);
     const [editOn, setEditOn] = useState(false);
     const [descriptionEdit, setDescriptionEdit] = useState(description);
     const [lastDescription, setLastDescription] = useState(description);
@@ -207,10 +208,17 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
     }
 
+    function reTweetFunction(){
+        console.log("Click in reTweet")
+    }
 
     return (
         <>
             <ContainerStyle>
+            <ReTweetStyle reTweet={true}>
+                <FaRetweet size={20} />
+                <p>Re-posted by you</p>
+            </ReTweetStyle>
             <PostContainer data-test="post" >
                 <Modal
                     isOpen={modalIsOpen}
@@ -240,6 +248,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                         />
                     <AiOutlineComment data-test="comment-btn" onClick={handleCommentsContainer}/>
                     <span data-test="comment-counter">0 comments</span>
+                    <FaRetweet size={20} onClick={reTweetFunction} />
+                    <span data-test="comment-counter">0 re-post</span>
                 </ImgLike>
                 <ContentContainer edit={editOn}>
                     <NameConfigPost>
@@ -470,4 +480,12 @@ const CardMetadata = styled.div`
         }
        
   }
+`;
+
+const ReTweetStyle = styled.div`
+    height: 33px;
+    display: ${(prop) => prop.reTweet ? 'flex' : 'none'};
+    align-items: center;
+    gap: 6px;
+    margin-left: 12px;
 `;
