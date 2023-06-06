@@ -215,8 +215,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     return (
         <>
             <ContainerStyle>
-            <ReTweetStyle reTweet={true}>
-                <FaRetweet size={20} />
+            <ReTweetStyle reTweet={false}>
+                <FaRetweet size={16} />
                 <p>Re-posted by you</p>
             </ReTweetStyle>
             <PostContainer data-test="post" >
@@ -289,9 +289,10 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
 }
 
 const ContainerStyle = styled.div`
-  width: 100%;
-  background: #1e1e1e;
-  border-radius: 16px;
+    width: 100%;
+    background: #1e1e1e;
+    border-radius: 16px;
+    font-family: 'Lato', sans-serif;
 `;
 
 const customStyles = {
