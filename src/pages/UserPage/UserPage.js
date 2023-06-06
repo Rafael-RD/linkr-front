@@ -8,6 +8,7 @@ import { Post } from "../../components/Post.js";
 import axios from "axios";
 import { useMediaQuery } from "react-responsive";
 import Search from "../../components/Search";
+import FollowButton from "../../components/FollowButton";
 
 export default function UserPage() {
     const { auth } = useContext(AuthContext);
@@ -16,21 +17,33 @@ export default function UserPage() {
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
+    const [follows, setFollows] = useState()
     const params = useParams();
 
     useEffect(() => {
         setLoading(true);
         if (auth) {
-            axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
-                .then(resp => {
-                    setPosts(resp.data);
-                    setLoading(false);
+
+            axios.get(`${process.env.REACT_APP_API_URL}/getFollow/${params.id}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
+                .then((res) => {
+                    if(res.data==="yourself") setFollows("yourself")
+                    else if(res.data.length > 0) setFollows("Inserted")
+                    else if(res.data.length <= 0) setFollows ("Deleted")
+                    axios.get(`${process.env.REACT_APP_API_URL}/user/${params.id}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
+                        .then(resp => {
+                            setPosts(resp.data);
+                            setLoading(false);
+                        })
+                        .catch(resp => {
+                            console.error(resp);
+                            setLoading(false);
+                            setError(true);
+                        });
                 })
-                .catch(resp => {
-                    console.error(resp);
-                    setLoading(false);
-                    setError(true);
-                });
+                .catch((err) => {
+                    alert("Error! Was not possible accomplish the operations")
+                })
+            
         } else setLoading(false);
         setReload(false)
     }, [reload, params]);
@@ -73,6 +86,7 @@ export default function UserPage() {
                             <>
                                 <img src={posts[0].picture} alt="user" />
                                 <h1>{posts[0].userName}</h1>
+                                <FollowButton follows={follows} setFollows={setFollows} />
                             </> :
                             <h1>Loading...</h1>}
                     </PageTitle>
