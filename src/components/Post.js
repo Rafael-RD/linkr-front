@@ -209,7 +209,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     }
 
     function reTweetFunction(){
-        console.log("Click in reTweet")
+        
     }
 
     return (
