@@ -55,7 +55,7 @@ export function Timeline({reload, setReload, posts, setPosts}) {
         } else {
             return (
                 <>
-                    {posts.map((e,i)=><Post key={i} postInfo={e} myUsername={auth?.username} 
+                    {posts.map(e => <Post key={e.id+e.userName} postInfo={e} myUsername={auth?.username} 
                     setReload={setReload} disable={disable}/>)}
                 </>
             )
