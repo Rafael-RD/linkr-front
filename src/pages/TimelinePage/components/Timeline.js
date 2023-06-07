@@ -15,7 +15,7 @@ export function Timeline({reload, setReload, posts, setPosts}) {
         if (auth) {
             axios.get(`${process.env.REACT_APP_API_URL}/ifFollow`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then(res => {
-                    console.log(res.data)
+                    // console.log(res.data)////////////////////////////////////////////////////////////
                     if(res.data) setIfFollow(true)
                     axios.get(`${process.env.REACT_APP_API_URL}/timeline`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                     .then(resp => {
@@ -36,7 +36,7 @@ export function Timeline({reload, setReload, posts, setPosts}) {
     }, [reload]);
 
     function showTimeline() {
-        {console.log("if",ifFollow)}
+        // {console.log("if",ifFollow)}/////////////////////////////////////////////////////////////////
         if (loading && !posts.length) {
             return (
                 <span data-test="message" >Loading</span>
@@ -57,7 +57,7 @@ export function Timeline({reload, setReload, posts, setPosts}) {
         } else {
             return (
                 <>
-                    {posts.map(e=><Post key={e.id} postInfo={e} myUsername={auth?.username} 
+                    {posts.map((e,i)=><Post key={i} postInfo={e} myUsername={auth?.username} 
                     setReload={setReload} disable={disable}/>)}
                 </>
             )
