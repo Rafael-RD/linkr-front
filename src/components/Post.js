@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete, AiOutlineComment } from "react-icons/ai";
+import { FaRetweet } from "react-icons/fa";
 import { TiPencil } from "react-icons/ti";
 import { Link, NavLink } from "react-router-dom";
 import { useEffect, useRef } from "react";
@@ -25,14 +26,19 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         qtt_likes,
         like_users,
         linkMetadata,
-        qtt_comments
+        qtt_comments,
+        qtt_reposts,
+        repostUserName,
+        repostId
     } = postInfo;
     /* eslint-enable */
     const focusEdit = useRef();
     const [editOn, setEditOn] = useState(false);
     const [descriptionEdit, setDescriptionEdit] = useState(description);
     const [lastDescription, setLastDescription] = useState(description);
-    const [modalIsOpen, setIsOpen] = useState(false);
+    const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
+    const [modalRePostIsOpen, setModalRePostIsOpen] = useState(false);
+    const [qttAtualRePost, setQttAtualRePost] = useState(qtt_reposts)
     const { auth } = useContext(AuthContext);
     const [likeCount, setLikeCount] = useState(qtt_likes)
     const [likeUsers, setLikeUsers] = useState(like_users)
@@ -154,12 +160,20 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     }
 
 
-    function openModal() {
-        setIsOpen(true);
+    function openModalDelete() {
+        setModalDeleteIsOpen(true);
     }
 
-    function closeModal() {
-        setIsOpen(false);
+    function closeModalDelete() {
+        setModalDeleteIsOpen(false);
+    }
+
+    function openModalRePost() {
+        setModalRePostIsOpen(true);
+    }
+
+    function closeModalRePost() {
+        setModalRePostIsOpen(false);
     }
 
     function pacthPostEdit() {
@@ -207,21 +221,49 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
     }
 
+    function sendRePost(){
+        const config = {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        }
+        axios.post(`${process.env.REACT_APP_API_URL}/share`, {postId: id}, config)
+            .then((res) => {
+                setQttAtualRePost(Number(qttAtualRePost)+1);
+            })
+            .catch((err) => {
+                alert(err.message)
+            })
+    }
 
     return (
         <>
             <ContainerStyle>
+            <ReTweetStyle reTweet={repostUserName}>
+                <FaRetweet size={16} />
+                <p>Re-posted by { auth.username === repostUserName ? "you" : repostUserName}</p>
+            </ReTweetStyle>
             <PostContainer data-test="post" >
                 <Modal
-                    isOpen={modalIsOpen}
-                    onRequestClose={closeModal}
+                    isOpen={modalDeleteIsOpen}
+                    onRequestClose={closeModalDelete}
                     style={customStyles}
                     contentLabel="Example Modal"
                 >
                     <h2 >Are you sure you want to delete this post?</h2>
                     <div>
-                        <button data-test="cancel" className="back" onClick={closeModal}>No, go back</button>
-                        <button data-test="confirm" className="delete" onClick={() => { closeModal(); deletePost(); }}>Yes, delete it</button>
+                        <button data-test="cancel" className="back" onClick={closeModalDelete}>No, go back</button>
+                        <button data-test="confirm" className="delete" onClick={() => { closeModalDelete(); deletePost(); }}>Yes, delete it</button>
+                    </div>
+                </Modal>
+                <Modal
+                    isOpen={modalRePostIsOpen}
+                    onRequestClose={closeModalRePost}
+                    style={customStyles}
+                    contentLabel="Example Modal"
+                >
+                    <h2 >Do you want to re-post this link?</h2>
+                    <div>
+                        <button data-test="cancel" className="back" onClick={closeModalRePost}>No, cancel</button>
+                        <button data-test="confirm" className="delete" onClick={() => { closeModalRePost(); sendRePost(); }}>Yes, share!</button>
                     </div>
                 </Modal>
                 <ImgLike>
@@ -240,13 +282,15 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                         />
                     <AiOutlineComment data-test="comment-btn" onClick={handleCommentsContainer}/>
                     <span data-test="comment-counter">{formatNumber(qtt_comments)} comments</span>
+                    <FaRetweet size={20} onClick={openModalRePost} />
+                    <span data-test="comment-counter">{formatNumber(qttAtualRePost)} re-post</span>
                 </ImgLike>
                 <ContentContainer edit={editOn}>
                     <NameConfigPost>
                         <NavLink data-test="username" to={`/user/${userId}`} >{userName}</NavLink>
                         <PostConfig hide={myUsername === userName}>
                             <TiPencil data-test="edit-btn" onClick={editPost} />
-                            <AiFillDelete data-test="delete-btn" onClick={openModal} />
+                            <AiFillDelete data-test="delete-btn" onClick={openModalDelete} />
                         </PostConfig>
                     </NameConfigPost>
                     {
@@ -470,4 +514,12 @@ const CardMetadata = styled.div`
         }
        
   }
+`;
+
+const ReTweetStyle = styled.div`
+    height: 33px;
+    display: ${(prop) => prop.reTweet ? 'flex' : 'none'};
+    align-items: center;
+    gap: 6px;
+    margin-left: 12px;
 `;
