@@ -15,7 +15,6 @@ export function Timeline({reload, setReload, posts, setPosts}) {
         if (auth) {
             axios.get(`${process.env.REACT_APP_API_URL}/ifFollow`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then(res => {
-                    // console.log(res.data)////////////////////////////////////////////////////////////
                     if(res.data) setIfFollow(true)
                     axios.get(`${process.env.REACT_APP_API_URL}/timeline`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                     .then(resp => {
@@ -36,7 +35,6 @@ export function Timeline({reload, setReload, posts, setPosts}) {
     }, [reload]);
 
     function showTimeline() {
-        // {console.log("if",ifFollow)}/////////////////////////////////////////////////////////////////
         if (loading && !posts.length) {
             return (
                 <span data-test="message" >Loading</span>
@@ -55,7 +53,6 @@ export function Timeline({reload, setReload, posts, setPosts}) {
                 <span data-test="message" >You don't follow anyone yet. Search for new friends!</span>
             )
         } else {
-            console.log(posts)
             return (
                 <>
                     {posts.map((e,i)=><Post key={i} postInfo={e} myUsername={auth?.username} 

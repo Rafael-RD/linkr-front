@@ -31,7 +31,6 @@ export function PublishPost({reload, setReload, posts, setPosts}) {
         axios.post(`${process.env.REACT_APP_API_URL}/post`, form, config)
                 .then((res) => {
                     setDisable(false)
-                    console.log(res.data)
                     setForm({link: "", description: ""})
                     setPosts([{...form, id: res.data.id, userName: auth.username, picture: auth.picture, linkMetadata: null}, ...posts]);
                     setReload(true);

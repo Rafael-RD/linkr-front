@@ -227,8 +227,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
         axios.post(`${process.env.REACT_APP_API_URL}/share`, {postId: id}, config)
             .then((res) => {
-                setQttAtualRePost(Number(qttAtualRePost)+1)
-                console.log(res.data)
+                setQttAtualRePost(Number(qttAtualRePost)+1);
             })
             .catch((err) => {
                 alert(err.message)
@@ -240,7 +239,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
             <ContainerStyle>
             <ReTweetStyle reTweet={repostUserName}>
                 <FaRetweet size={16} />
-                <p>Re-posted by {repostUserName}</p>
+                <p>Re-posted by { auth.username === repostUserName ? "you" : repostUserName}</p>
             </ReTweetStyle>
             <PostContainer data-test="post" >
                 <Modal
