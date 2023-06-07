@@ -11,6 +11,7 @@ import AuthContext from "../context/auth.context.js";
 import HashtagDescription from "./HashtagDescription.js";
 import { getMetadata } from "../utils/metadataRequest.js";
 import Comment from "./Comment.js";
+import { useReducer } from "react";
 
 export function Post({ postInfo, myUsername, setReload, disable }) {
     /* eslint-disable */
@@ -24,8 +25,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         picture,
         qtt_likes,
         like_users,
-        tag_array,
-        linkMetadata
+        linkMetadata,
+        qtt_comments
     } = postInfo;
     /* eslint-enable */
     const focusEdit = useRef();
@@ -91,11 +92,11 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
     }
 
-    function showLikes(likes) {
-        if (!likes) return "0";
-        else if (likes < 1000) return likes;
-        else if (likes < 1000 * 1000) return Math.floor(likes / 1000) + " K";
-        else return Math.floor(likes / (1000 * 1000)) + " M";
+    function formatNumber(number) {
+        if (!number) return "0";
+        else if (number < 1000) return number;
+        else if (number < 1000 * 1000) return Math.floor(number / 1000) + " K";
+        else return Math.floor(number / (1000 * 1000)) + " M";
     }
 
     function tooltipContent() {
@@ -117,8 +118,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                 else return `${likeUsers[0]}, ${likeUsers[1]} and 1 other`;
 
             default:
-                if (userLiked) return `You, ${otherLikes[0]} and ${showLikes(likeCount - 2)} others`;
-                else return `${likeUsers[0]}, ${likeUsers[1]} and ${showLikes(likeCount - 2)} others`;
+                if (userLiked) return `You, ${otherLikes[0]} and ${formatNumber(likeCount - 2)} others`;
+                else return `${likeUsers[0]}, ${likeUsers[1]} and ${formatNumber(likeCount - 2)} others`;
         }
     }
 
@@ -228,7 +229,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                     <img src={picture} alt="profile" 
                     onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)} />
                     {liked()}
-                    <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
+                    <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{formatNumber(likeCount)} likes</span>
                     <Tooltip  id="likes-tooltip" data-test="tooltip"
                         style={{
                             backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -239,7 +240,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                         afterShow={()=>document.querySelector('#likes-tooltip').setAttribute('data-test','tooltip')}
                         />
                     <AiOutlineComment data-test="comment-btn" onClick={handleCommentsContainer}/>
-                    <span data-test="comment-counter">0 comments</span>
+                    <span data-test="comment-counter">{formatNumber(qtt_comments)} comments</span>
                 </ImgLike>
                 <ContentContainer edit={editOn}>
                     <NameConfigPost>
