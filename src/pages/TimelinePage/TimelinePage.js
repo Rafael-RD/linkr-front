@@ -12,6 +12,7 @@ export default function TimelinePage() {
     const [reload, setReload] = useState(false);
     const [posts, setPosts] = useState([]);
     const render = useMediaQuery({ maxWidth: 425 });
+    const [loaded, setLoaded] = useState(false)
 
     return(
         <>
@@ -23,8 +24,8 @@ export default function TimelinePage() {
             <Wrapper>
             <ContentContainer>
                 <PublishPost reload={reload} setReload={setReload} posts={posts} setPosts={setPosts}/>
-                <PostListUpdater posts={posts} setPosts={setPosts}/>
-                <Timeline reload={reload} setReload={setReload} posts={posts} setPosts={setPosts}/>
+                <PostListUpdater posts={posts} setPosts={setPosts} loaded={loaded}/>
+                <Timeline reload={reload} setReload={setReload} posts={posts} setPosts={setPosts} setLoaded={setLoaded}/>
             </ContentContainer>
             <TrendingList/>
             </Wrapper>

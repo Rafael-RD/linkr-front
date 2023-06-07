@@ -2,16 +2,23 @@ import styled from "styled-components";
 import { GrUpdate } from "react-icons/gr";
 import useInterval from "use-interval";
 import postsServices from "../../../services/postsServices";
-import { useContext } from "react";
 import AuthContext from "../../../context/auth.context";
-import { useState } from "react";
+import { useEffect, useState, useContext } from "react";
 
-export default function PostListUpdater({ posts, setPosts }) {
+export default function PostListUpdater({ posts, setPosts, loaded }) {
   const { auth } = useContext(AuthContext);
   const [counter, setCounter] = useState(0);
   const [loading, setLoading] = useState(false);
-  let intervalTimer = 15000;
   let lastCreatedAt = posts[0]?.createdAt || null;
+  const [intervalTimer, setIntervalTimer] = useState(null);
+
+  useEffect(() => {
+    if (loaded) {
+      setIntervalTimer(15000);
+    } else {
+      setIntervalTimer(null);
+    }
+  }, [loaded]);
 
   useInterval(() => {
     postsServices
