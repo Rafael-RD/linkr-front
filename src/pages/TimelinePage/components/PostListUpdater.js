@@ -40,7 +40,11 @@ export default function PostListUpdater({ posts, setPosts }) {
   return (
     <>
       {counter > 0 && (
-        <UpdaterBtn onClick={handleClick} disabled={loading}>
+        <UpdaterBtn
+          onClick={handleClick}
+          disabled={loading}
+          data-test="load-btn"
+        >
           <span>{counter} new posts, load more!</span>
           <GrUpdate color="white" fill="white" size={16} />
         </UpdaterBtn>
