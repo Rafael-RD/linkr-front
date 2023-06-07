@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { AiFillHeart, AiOutlineHeart, AiFillDelete, AiOutlineComment } from "react-icons/ai";
-import { FaRetweet } from "react-icons/fa"
+import { FaRetweet } from "react-icons/fa";
 import { TiPencil } from "react-icons/ti";
 import { Link, NavLink } from "react-router-dom";
 import { useEffect, useRef } from "react";
@@ -25,15 +25,20 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         picture,
         qtt_likes,
         like_users,
-        tag_array,
-        linkMetadata
+        linkMetadata,
+        qtt_comments,
+        qtt_reposts,
+        repostUserName,
+        repostId
     } = postInfo;
     /* eslint-enable */
-    const focusEdit = useRef(null);
+    const focusEdit = useRef();
     const [editOn, setEditOn] = useState(false);
     const [descriptionEdit, setDescriptionEdit] = useState(description);
     const [lastDescription, setLastDescription] = useState(description);
-    const [modalIsOpen, setIsOpen] = useState(false);
+    const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
+    const [modalRePostIsOpen, setModalRePostIsOpen] = useState(false);
+    const [qttAtualRePost, setQttAtualRePost] = useState(qtt_reposts)
     const { auth } = useContext(AuthContext);
     const [likeCount, setLikeCount] = useState(qtt_likes)
     const [likeUsers, setLikeUsers] = useState(like_users)
@@ -92,11 +97,11 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
     }
 
-    function showLikes(likes) {
-        if (!likes) return "0";
-        else if (likes < 1000) return likes;
-        else if (likes < 1000 * 1000) return Math.floor(likes / 1000) + " K";
-        else return Math.floor(likes / (1000 * 1000)) + " M";
+    function formatNumber(number) {
+        if (!number) return "0";
+        else if (number < 1000) return number;
+        else if (number < 1000 * 1000) return Math.floor(number / 1000) + " K";
+        else return Math.floor(number / (1000 * 1000)) + " M";
     }
 
     function tooltipContent() {
@@ -118,8 +123,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                 else return `${likeUsers[0]}, ${likeUsers[1]} and 1 other`;
 
             default:
-                if (userLiked) return `You, ${otherLikes[0]} and ${showLikes(likeCount - 2)} others`;
-                else return `${likeUsers[0]}, ${likeUsers[1]} and ${showLikes(likeCount - 2)} others`;
+                if (userLiked) return `You, ${otherLikes[0]} and ${formatNumber(likeCount - 2)} others`;
+                else return `${likeUsers[0]}, ${likeUsers[1]} and ${formatNumber(likeCount - 2)} others`;
         }
     }
 
@@ -155,12 +160,20 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
     }
 
 
-    function openModal() {
-        setIsOpen(true);
+    function openModalDelete() {
+        setModalDeleteIsOpen(true);
     }
 
-    function closeModal() {
-        setIsOpen(false);
+    function closeModalDelete() {
+        setModalDeleteIsOpen(false);
+    }
+
+    function openModalRePost() {
+        setModalRePostIsOpen(true);
+    }
+
+    function closeModalRePost() {
+        setModalRePostIsOpen(false);
     }
 
     function pacthPostEdit() {
@@ -208,35 +221,57 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
     }
 
-    function reTweetFunction(){
-        
+    function sendRePost(){
+        const config = {
+            headers: { Authorization: `Bearer ${auth.token}` }
+        }
+        axios.post(`${process.env.REACT_APP_API_URL}/share`, {postId: id}, config)
+            .then((res) => {
+                setQttAtualRePost(Number(qttAtualRePost)+1)
+                console.log(res.data)
+            })
+            .catch((err) => {
+                alert(err.message)
+            })
     }
 
     return (
         <>
             <ContainerStyle>
-            <ReTweetStyle reTweet={false}>
+            <ReTweetStyle reTweet={repostUserName}>
                 <FaRetweet size={16} />
-                <p>Re-posted by you</p>
+                <p>Re-posted by {repostUserName}</p>
             </ReTweetStyle>
             <PostContainer data-test="post" >
                 <Modal
-                    isOpen={modalIsOpen}
-                    onRequestClose={closeModal}
+                    isOpen={modalDeleteIsOpen}
+                    onRequestClose={closeModalDelete}
                     style={customStyles}
                     contentLabel="Example Modal"
                 >
                     <h2 >Are you sure you want to delete this post?</h2>
                     <div>
-                        <button data-test="cancel" className="back" onClick={closeModal}>No, go back</button>
-                        <button data-test="confirm" className="delete" onClick={() => { closeModal(); deletePost(); }}>Yes, delete it</button>
+                        <button data-test="cancel" className="back" onClick={closeModalDelete}>No, go back</button>
+                        <button data-test="confirm" className="delete" onClick={() => { closeModalDelete(); deletePost(); }}>Yes, delete it</button>
+                    </div>
+                </Modal>
+                <Modal
+                    isOpen={modalRePostIsOpen}
+                    onRequestClose={closeModalRePost}
+                    style={customStyles}
+                    contentLabel="Example Modal"
+                >
+                    <h2 >Do you want to re-post this link?</h2>
+                    <div>
+                        <button data-test="cancel" className="back" onClick={closeModalRePost}>No, cancel</button>
+                        <button data-test="confirm" className="delete" onClick={() => { closeModalRePost(); sendRePost(); }}>Yes, share!</button>
                     </div>
                 </Modal>
                 <ImgLike>
                     <img src={picture} alt="profile" 
                     onError={(e) => (e.target.src = `https://cdn.hugocalixto.com.br/wp-content/uploads/sites/22/2020/07/error-404-1.png`)} />
                     {liked()}
-                    <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{showLikes(likeCount)} likes</span>
+                    <span data-test="counter" data-tooltip-id="likes-tooltip" data-tooltip-content={tooltipContent()} data-tooltip-place="bottom" >{formatNumber(likeCount)} likes</span>
                     <Tooltip  id="likes-tooltip" data-test="tooltip"
                         style={{
                             backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -247,16 +282,16 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                         afterShow={()=>document.querySelector('#likes-tooltip').setAttribute('data-test','tooltip')}
                         />
                     <AiOutlineComment data-test="comment-btn" onClick={handleCommentsContainer}/>
-                    <span data-test="comment-counter">0 comments</span>
-                    <FaRetweet size={20} onClick={reTweetFunction} />
-                    <span data-test="comment-counter">0 re-post</span>
+                    <span data-test="comment-counter">{formatNumber(qtt_comments)} comments</span>
+                    <FaRetweet size={20} onClick={openModalRePost} />
+                    <span data-test="comment-counter">{formatNumber(qttAtualRePost)} re-post</span>
                 </ImgLike>
                 <ContentContainer edit={editOn}>
                     <NameConfigPost>
                         <NavLink data-test="username" to={`/user/${userId}`} >{userName}</NavLink>
                         <PostConfig hide={myUsername === userName}>
                             <TiPencil data-test="edit-btn" onClick={editPost} />
-                            <AiFillDelete data-test="delete-btn" onClick={openModal} />
+                            <AiFillDelete data-test="delete-btn" onClick={openModalDelete} />
                         </PostConfig>
                     </NameConfigPost>
                     {
@@ -289,10 +324,9 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
 }
 
 const ContainerStyle = styled.div`
-    width: 100%;
-    background: #1e1e1e;
-    border-radius: 16px;
-    font-family: 'Lato', sans-serif;
+  width: 100%;
+  background: #1e1e1e;
+  border-radius: 16px;
 `;
 
 const customStyles = {
