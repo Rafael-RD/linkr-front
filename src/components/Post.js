@@ -11,7 +11,6 @@ import AuthContext from "../context/auth.context.js";
 import HashtagDescription from "./HashtagDescription.js";
 import { getMetadata } from "../utils/metadataRequest.js";
 import Comment from "./Comment.js";
-import { useReducer } from "react";
 
 export function Post({ postInfo, myUsername, setReload, disable }) {
     /* eslint-disable */
