@@ -6,6 +6,7 @@ import TrendingList from "../../components/TrendingList";
 import { useMediaQuery } from "react-responsive";
 import Search from "../../components/Search";
 import { PublishPost } from "./components/PublishPost";
+import PostListUpdater from "./components/PostListUpdater";
 
 export default function TimelinePage() {
     const [reload, setReload] = useState(false);
@@ -22,6 +23,7 @@ export default function TimelinePage() {
             <Wrapper>
             <ContentContainer>
                 <PublishPost reload={reload} setReload={setReload} posts={posts} setPosts={setPosts}/>
+                <PostListUpdater posts={posts} setPosts={setPosts}/>
                 <Timeline reload={reload} setReload={setReload} posts={posts} setPosts={setPosts}/>
             </ContentContainer>
             <TrendingList/>
