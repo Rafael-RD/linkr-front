@@ -13,12 +13,12 @@ body{
         justify-content: center;
         z-index: 99999999;
         h2{
-            font-family: Lato;
+            font-family: "Lato", sans-serif;
             font-size: 34px;
             font-weight: 700;
             text-align: center;
             color: #FFFFFF;
-            width: 338px;
+            width: 387px;
         }
         >div{
             display: flex;
@@ -26,6 +26,7 @@ body{
             gap: 50px;
         }
         button{
+            font-family: "Lato", sans-serif;
             width: 134px;
             height: 37px;
             border-radius: 5px;
