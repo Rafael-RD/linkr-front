@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { ThreeDots } from "react-loader-spinner";
+import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import AuthContext from "../context/auth.context";
@@ -8,35 +9,41 @@ import tagsServices from "../services/tagsServices";
 export default function TrendingList() {
   const { auth } = useContext(AuthContext);
   const [tags, setTags] = useState([]);
+  const render = useMediaQuery({ maxWidth: 768 });
 
   useEffect(() => {
     tagsServices
       .trendingList(auth.token)
       .then(({ data }) => {
-        console.log(data);
         setTags(data);
       })
       .catch((err) => console.log(err));
   }, []);
 
   return (
-    <TrendingListStyle>
-      <h4>trending</h4>
-      <ul>
-        {!tags.length && (
-          <LoadingStyle>
-            Loading
-            <ThreeDots height={6} width="auto" color="white" />
-          </LoadingStyle>
-        )}
+    <>
+      {!render && (
+        <TrendingListStyle data-test="trending">
+          <h4>trending</h4>
+          <ul>
+            {!tags.length && (
+              <LoadingStyle>
+                Loading
+                <ThreeDots height={6} width={18} color="white" />
+              </LoadingStyle>
+            )}
 
-        {tags.map((t) => (
-          <li>
-            <Link to={`/hashtag/${t.name}`}># {t.name}</Link>
-          </li>
-        ))}
-      </ul>
-    </TrendingListStyle>
+            {tags.map((t) => (
+              <li key={t.name}>
+                <Link to={`/hashtag/${t.name}`} data-test="hashtag">
+                  #{t.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </TrendingListStyle>
+      )}
+    </>
   );
 }
 
@@ -44,8 +51,6 @@ const TrendingListStyle = styled.div`
   background: #171717;
   width: 301px;
   border-radius: 16px;
-  margin-top: calc(53px + 43px + 40px);
-  margin-left: 38px;
   position: sticky;
   height: 100%;
   top: calc(53px + 43px + 40px);

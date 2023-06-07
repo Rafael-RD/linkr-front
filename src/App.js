@@ -5,6 +5,7 @@ import SignupPage from "./pages/SignupPage.js/SignupPage.js";
 import { AuthProvider } from "./context/auth.context.js";
 import TimelinePage from "./pages/TimelinePage/TimelinePage.js";
 import HashtagPage from "./pages/HashtagPage/HashtagPage.js";
+import UserPage from "./pages/UserPage/UserPage.js";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route path="/sign-up" element={<SignupPage />} />
             <Route path="/timeline" element={<TimelinePage />} />
             <Route path="/hashtag/:hashtag" element={<HashtagPage/>} />
+            <Route path="/user/:id" element={ <UserPage /> } />
           </Routes>
         </AuthProvider>
       </BrowserRouter>
@@ -26,7 +28,6 @@ function App() {
 export default App;
 
 const Page = styled.div`
-  width: 100vw;
   min-height: 100vH;
   background-color: #333333;
 `;

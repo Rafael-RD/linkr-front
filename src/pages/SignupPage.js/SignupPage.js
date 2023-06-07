@@ -76,7 +76,7 @@ export default function SignupPage() {
             onChange={handleChange}
             value={form.username}
             disabled={loading}
-            ata-test="username"
+            data-test="username"
           />
           <input
             placeholder="picture url"
@@ -160,6 +160,18 @@ const SignupStyle = styled.div`
       line-height: 24px;
       text-decoration-line: underline;
       color: #ffffff;
+    }
+  }
+  @media (max-width: 425px) {
+    flex-direction: column;
+    > section {
+      a {
+        font-weight: 400;
+        font-size: 17px;
+        line-height: 20px;
+        text-decoration-line: underline;
+        color: #ffffff;
+      }
     }
   }
 `;

@@ -14,6 +14,10 @@ function trendingList(token) {
   return axios.get(`${url}/trending`, generateHeader(token));
 }
 
-const tagsServices = { trendingList };
+function getTagPostList(token, name) {
+  return axios.get(`${url}/hashtag/${name}`, generateHeader(token));
+}
+
+const tagsServices = { trendingList, getTagPostList };
 
 export default tagsServices;
