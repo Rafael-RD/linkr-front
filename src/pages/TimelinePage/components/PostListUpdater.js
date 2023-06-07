@@ -22,7 +22,7 @@ export default function PostListUpdater({ posts, setPosts, loaded }) {
 
   useInterval(() => {
     postsServices
-      .getNewPostsCounter(auth.token, lastCreatedAt)
+      .getNewPostsCounter(auth?.token, lastCreatedAt)
       .then((res) => {
         setCounter(Number(res.data.new_post_counts) - 1);
       })
@@ -32,7 +32,7 @@ export default function PostListUpdater({ posts, setPosts, loaded }) {
   function handleClick() {
     setLoading(true);
     postsServices
-      .getNewPostsUpdate(auth.token, lastCreatedAt)
+      .getNewPostsUpdate(auth?.token, lastCreatedAt)
       .then((res) => {
         setLoading(false);
         setPosts([...res.data, ...posts]);
