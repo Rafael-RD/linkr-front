@@ -40,7 +40,7 @@ export default function PostListUpdater({ posts, setPosts, loaded }) {
       })
       .catch((err) => {
         setLoading(false);
-        console.log(err);
+        alert(`Error ${err.response.status}: ${err.response.data}`);
       });
   }
 
