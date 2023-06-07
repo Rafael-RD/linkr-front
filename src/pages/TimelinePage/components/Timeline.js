@@ -8,26 +8,35 @@ export function Timeline({reload, setReload, posts, setPosts}) {
     const { auth } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-
+    const [ifFollow, setIfFollow] = useState(false)
     let disable=false
     useEffect(() => {
         setLoading(true);
         if (auth) {
-            axios.get(`${process.env.REACT_APP_API_URL}/timeline`, { headers: { Authorization: `Bearer ${auth?.token}` } })
-                .then(resp => {
-                    setPosts(resp.data);
-                    setLoading(false);
+            axios.get(`${process.env.REACT_APP_API_URL}/ifFollow`, { headers: { Authorization: `Bearer ${auth?.token}` } })
+                .then(res => {
+                    console.log(res.data)
+                    if(res.data) setIfFollow(true)
+                    axios.get(`${process.env.REACT_APP_API_URL}/timeline`, { headers: { Authorization: `Bearer ${auth?.token}` } })
+                    .then(resp => {
+                        setPosts(resp.data);
+                        setLoading(false);
+                    })
+                    .catch(resp => {
+                        console.error(resp);
+                        setLoading(false);
+                        setError(true);
+                    });
                 })
                 .catch(resp => {
                     console.error(resp);
-                    setLoading(false);
-                    setError(true);
                 });
         } else setLoading(false);
         setReload(false)
     }, [reload]);
 
     function showTimeline() {
+        {console.log("if",ifFollow)}
         if (loading && !posts.length) {
             return (
                 <span data-test="message" >Loading</span>
@@ -37,9 +46,13 @@ export function Timeline({reload, setReload, posts, setPosts}) {
             return (
                 <span data-test="message" >An error occured while trying to fetch the posts, please refresh the page</span>
             )
-        } else if (posts.length === 0) {
+        } else if (posts.length === 0 && ifFollow) {
             return (
-                <span data-test="message" >There are no posts yet</span>
+                <span data-test="message" >No posts found from your friends</span>
+            )
+        } else if (posts.length === 0 && !ifFollow) {
+            return (
+                <span data-test="message" >You don't follow anyone yet. Search for new friends!</span>
             )
         } else {
             return (
