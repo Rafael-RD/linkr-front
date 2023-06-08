@@ -4,6 +4,7 @@ import AuthContext from "../../../context/auth.context.js";
 import axios from "axios";
 import { Post } from "../../../components/Post.js";
 import InfiniteScroll from "react-infinite-scroller";
+import Loading from "../../../components/Loading.js";
 
 export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
     const { auth } = useContext(AuthContext);
@@ -72,7 +73,7 @@ export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
             )
         } else if (loading && !posts.length) {
             return (
-                <span data-test="message" >Loading</span>
+                <Loading key={0} />
             )
         } else if (posts.length === 0 && ifFollow) {
             return (
@@ -98,7 +99,8 @@ export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
                 pageStart={0}
                 loadMore={fetchPosts}
                 hasMore={posts.length % 10 === 0 && posts.length !== 0 && loading===false}
-                loader={<div key={0}><span>Loading more posts...</span></div>}
+                loader={<Loading key={0} />}
+                threshold={0}
             >
                 {showTimeline()}
             </InfiniteScroll>
@@ -115,6 +117,7 @@ const TimelineContainer = styled.div`
         align-items: center;
         gap: 20px;
         margin-top: 30px;
+        overflow: hidden;
         @media (max-width: 425px) {
             width: 100vw;
         }
