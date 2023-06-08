@@ -23,6 +23,7 @@ export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
                     if (res.data) setIfFollow(true)
                     axios.get(`${process.env.REACT_APP_API_URL}/timeline`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                         .then(resp => {
+                            if (resp.data.length < 10) setEndTimeline(true);
                             setPosts(resp.data);
                             setLoading(false);
                             setLoaded(true)
