@@ -59,7 +59,7 @@ export default function HashtagPage() {
 
               {postList.map((p) => (
                 <PostCard
-                  key={p.id}
+                  key={`${p.id}` + p.createdAt}
                   item={p}
                   setReload={setReload}
                   postList={postList}
