@@ -45,7 +45,7 @@ export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
         setLoading(true);
         setLoaded(false);
         if (auth) {
-            axios.get(`${process.env.REACT_APP_API_URL}/timeline?createdAt=${posts[posts.length - 1].createdAt.toString()}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
+            axios.get(`${process.env.REACT_APP_API_URL}/timeline?createdAt=${posts[posts.length - 1].createdAt?.toString()}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then(resp => {
                     if (resp.data.length < 10) setEndTimeline(true);
                     setPosts([...posts, ...resp.data]);
