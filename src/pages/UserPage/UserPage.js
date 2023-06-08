@@ -95,7 +95,10 @@ export default function UserPage() {
                                 <FollowButton follows={follows} setFollows={setFollows} />
                             </> : error.status === 404 ?
                                 <h1>User NOT Found</h1> :
-                                <h1>Loading...</h1>}
+                                <>
+                                <h1>Loading...</h1>
+                                <FollowButton/> 
+                                </>}
                     </PageTitle>
                     <Wrapper>
                         <ContentContainer>
