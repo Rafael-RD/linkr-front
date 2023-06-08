@@ -52,7 +52,7 @@ export default function UserPage() {
             return (
                 <span data-test="message" >Loading</span>
             )
-        } else if (Object.keys(error).length != 0) {
+        } else if (Object.keys(error).length !== 0) {
             if (error.status === 404) {
                 alert('user not found');
                 return (

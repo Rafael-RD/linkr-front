@@ -15,6 +15,7 @@ import { getMetadata } from "../../../utils/metadataRequest";
 import Modal from "react-modal";
 import { TiPencil } from "react-icons/ti";
 import Comment from "../../../components/Comment";
+import { FaRetweet } from "react-icons/fa";
 
 export default function PostCard({ item, setReload, postList, setPostList }) {
   const focusEdit = useRef();
@@ -22,25 +23,31 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
   const myUsername = auth.username;
   const {
     id,
-    userId,
-    qtt_comments,
-    picture,
-    hasLiked,
-    qtt_likes,
-    userName,
     description,
-    linkMetadata,
     link,
+    createdAt,
+    userName,
+    userId,
+    picture,
+    qtt_likes,
     like_users,
+    qtt_comments,
+    qtt_reposts,
+    repostUserName,
+    hasLiked,
+    linkMetadata,
   } = item;
-  const [likeCount, setLikeCount] = useState(qtt_likes);
-  const [likeUsers, setLikeUsers] = useState(like_users);
-  const [updateMetadata, setUpdateMetadata] = useState(linkMetadata);
   const [editOn, setEditOn] = useState(false);
   const [descriptionEdit, setDescriptionEdit] = useState(description);
   const [lastDescription, setLastDescription] = useState(description);
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [modalDeleteIsOpen, setModalDeleteIsOpen] = useState(false);
+  const [modalRePostIsOpen, setModalRePostIsOpen] = useState(false);
+  const [qttAtualRePost, setQttAtualRePost] = useState(qtt_reposts);
+  const [likeCount, setLikeCount] = useState(qtt_likes);
+  const [likeUsers, setLikeUsers] = useState(like_users);
+  const [commentAmount, setCommentAmount] = useState(qtt_comments);
   const [userLikedThisPost, setUserLikedThisPost] = useState(hasLiked);
+  const [updateMetadata, setUpdateMetadata] = useState(linkMetadata);
   const [openComments, setOpenComments] = useState(false);
   const [commentHeight, setCommentHeight] = useState("0px");
   let disable = false;
@@ -110,12 +117,35 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
     }
   }
 
-  function openModal() {
-    setIsOpen(true);
+  function sendRePost() {
+    const config = {
+      headers: { Authorization: `Bearer ${auth?.token}` },
+    };
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/share`, { postId: id }, config)
+      .then((res) => {
+        console.log(res);
+        setQttAtualRePost(Number(qttAtualRePost) + 1);
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
   }
 
-  function closeModal() {
-    setIsOpen(false);
+  function openModalDelete() {
+    setModalDeleteIsOpen(true);
+  }
+
+  function closeModalDelete() {
+    setModalDeleteIsOpen(false);
+  }
+
+  function openModalRePost() {
+    setModalRePostIsOpen(true);
+  }
+
+  function closeModalRePost() {
+    setModalRePostIsOpen(false);
   }
 
   function pacthPostEdit() {
@@ -199,26 +229,63 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
 
   return (
     <li data-test="post">
+      {repostUserName && (
+        <RepostStyle>
+          <FaRetweet size={16} />
+          Re-posted by {repostUserName}
+        </RepostStyle>
+      )}
       <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={closeModal}
+        isOpen={modalDeleteIsOpen}
+        onRequestClose={closeModalDelete}
         style={customStyles}
         contentLabel="Example Modal"
       >
         <h2>Are you sure you want to delete this post?</h2>
         <div>
-          <button className="back" data-test="cancel" onClick={closeModal}>
+          <button
+            data-test="cancel"
+            className="back"
+            onClick={closeModalDelete}
+          >
             No, go back
           </button>
           <button
             data-test="confirm"
             className="delete"
             onClick={() => {
-              closeModal();
+              closeModalDelete();
               deletePost();
             }}
           >
             Yes, delete it
+          </button>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={modalRePostIsOpen}
+        onRequestClose={closeModalRePost}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        <h2>Do you want to re-post this link?</h2>
+        <div>
+          <button
+            data-test="cancel"
+            className="back"
+            onClick={closeModalRePost}
+          >
+            No, cancel
+          </button>
+          <button
+            data-test="confirm"
+            className="delete"
+            onClick={() => {
+              closeModalRePost();
+              sendRePost();
+            }}
+          >
+            Yes, share!
           </button>
         </div>
       </Modal>
@@ -274,7 +341,17 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
               data-test="comment-btn"
               onClick={handleCommentsContainer}
             />
-            <p data-test="comment-counter">{showLikes(qtt_comments)} comments</p>
+            <p data-test="comment-counter">
+              {showLikes(commentAmount)} comments
+            </p>
+            <FaRetweet
+              data-test="repost-btn"
+              size={20}
+              onClick={openModalRePost}
+            />
+            <p data-test="repost-counter">
+              {showLikes(qttAtualRePost)} re-post
+            </p>
           </LikeInfo>
         </ItemNav>
         <PostInfo>
@@ -286,7 +363,7 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
               <TiPencil data-test="edit-btn" onClick={editPost} color="white" />
               <AiFillDelete
                 data-test="delete-btn"
-                onClick={openModal}
+                onClick={openModalDelete}
                 color="white"
               />
             </PostConfig>
@@ -340,6 +417,7 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
           postId={id}
           height={commentHeight}
           setHeight={setCommentHeight}
+          setCommentAmount={setCommentAmount}
         />
       )}
     </li>
@@ -544,7 +622,7 @@ const PostInfo = styled.div`
     line-height: 23px;
     color: #ffffff;
   }
-  p,
+  > div:nth-child(2),
   textarea {
     font-size: 17px;
     line-height: 20px;
@@ -609,4 +687,17 @@ const NameConfig = styled.div`
       line-height: 20px;
     }
   }
+`;
+
+const RepostStyle = styled.article`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 13px;
+  font-family: "Lato";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 11px;
+  line-height: 13px;
+  color: #ffffff;
 `;
