@@ -14,7 +14,7 @@ export default function FollowButton({follows, setFollows}) {
         setDisable(true)
         const body = { followedId: params.id }
         const config = {
-            headers: { Authorization: `Bearer ${auth.token}` }
+            headers: { Authorization: `Bearer ${auth?.token}` }
         }
         axios.post(`${process.env.REACT_APP_API_URL}/follow`, body, config)
             .then((res) => {
@@ -36,9 +36,7 @@ export default function FollowButton({follows, setFollows}) {
                 {follows === "Inserted" ? "Unfollow" : "Follow"} 
             </FollowButtons>    
         }
-        
-        </>
-        
+        </>        
     )
 }
 
