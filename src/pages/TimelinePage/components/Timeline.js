@@ -98,7 +98,7 @@ export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
             <InfiniteScroll
                 pageStart={0}
                 loadMore={fetchPosts}
-                hasMore={posts.length % 10 === 0 && posts.length !== 0 && loading===false}
+                hasMore={posts.length % 10 === 0 && posts.length !== 0}
                 loader={<Loading key={0} />}
                 threshold={0}
             >
