@@ -413,7 +413,7 @@ const ContentContainer = styled.div`
         overflow: auto;
     }
 
-    p{
+    >div:nth-child(2){
         font-family: 'Lato', sans-serif;
         font-weight: 400;
         font-size: 20px;
