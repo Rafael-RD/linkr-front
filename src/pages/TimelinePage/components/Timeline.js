@@ -10,7 +10,8 @@ export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
     const { auth } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-    const [ifFollow, setIfFollow] = useState(false)
+    const [ifFollow, setIfFollow] = useState(false);
+    const [endTimeline, setEndTimeline] = useState(false);
     let disable = false
 
     useEffect(() => {
@@ -22,7 +23,6 @@ export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
                     if (res.data) setIfFollow(true)
                     axios.get(`${process.env.REACT_APP_API_URL}/timeline`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                         .then(resp => {
-                            console.log(resp.data)
                             setPosts(resp.data);
                             setLoading(false);
                             setLoaded(true)
@@ -41,17 +41,13 @@ export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
         setReload(false)
     }, [reload]);
 
-
-    // useEffect(()=>console.log(posts),[posts])
-
     function fetchPosts() {
         setLoading(true);
         setLoaded(false);
-        console.log(posts.length)
         if (auth) {
-            axios.get(`${process.env.REACT_APP_API_URL}/timeline?createdAt=${posts[posts.length-1].createdAt.toString()}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
+            axios.get(`${process.env.REACT_APP_API_URL}/timeline?createdAt=${posts[posts.length - 1].createdAt.toString()}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then(resp => {
-                    console.log(resp)
+                    if (resp.data.length < 10) setEndTimeline(true);
                     setPosts([...posts, ...resp.data]);
                     setLoading(false);
                     setLoaded(true);
@@ -86,8 +82,8 @@ export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
         } else {
             return (
                 <>
-                    {posts.map(e => <Post key={e.id+e.repostUserName} postInfo={e} myUsername={auth?.username} 
-                    setReload={setReload} disable={disable}/>)}
+                    {posts.map(e => <Post key={e.id + e.repostUserName} postInfo={e} myUsername={auth?.username}
+                        setReload={setReload} disable={disable} />)}
                 </>
             )
         }
@@ -98,7 +94,7 @@ export function Timeline({ reload, setReload, posts, setPosts, setLoaded }) {
             <InfiniteScroll
                 pageStart={0}
                 loadMore={fetchPosts}
-                hasMore={posts.length % 10 === 0 && posts.length !== 0}
+                hasMore={posts.length !== 0 && endTimeline === false}
                 loader={<Loading key={0} />}
                 threshold={0}
             >
