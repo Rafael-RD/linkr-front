@@ -25,12 +25,12 @@ export function Timeline({reload, setReload, posts, setPosts, setLoaded}) {
                     })
                     .catch(resp => {
                         console.error(resp);
-                        setLoading(false);
-                        setError(true);
                     });
                 })
                 .catch(resp => {
                     console.error(resp);
+                    setLoading(false);
+                    setError(true);
                 });
         } else setLoading(false);
         setReload(false)
