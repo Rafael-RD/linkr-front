@@ -45,7 +45,7 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
   const [qttAtualRePost, setQttAtualRePost] = useState(qtt_reposts);
   const [likeCount, setLikeCount] = useState(qtt_likes);
   const [likeUsers, setLikeUsers] = useState(like_users);
-  const [commentAmount, setCommentAmount] = useState(qtt_comments)
+  const [commentAmount, setCommentAmount] = useState(qtt_comments);
   const [userLikedThisPost, setUserLikedThisPost] = useState(hasLiked);
   const [updateMetadata, setUpdateMetadata] = useState(linkMetadata);
   const [openComments, setOpenComments] = useState(false);
@@ -622,7 +622,7 @@ const PostInfo = styled.div`
     line-height: 23px;
     color: #ffffff;
   }
-  p,
+  > div:nth-child(2),
   textarea {
     font-size: 17px;
     line-height: 20px;

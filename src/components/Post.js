@@ -13,7 +13,7 @@ import HashtagDescription from "./HashtagDescription.js";
 import { getMetadata } from "../utils/metadataRequest.js";
 import Comment from "./Comment.js";
 
-export function Post({ postInfo, myUsername, setReload, disable }) {
+export function Post({ postInfo, myUsername, setReload, disable, posts, setPosts }) {
     /* eslint-disable */
     const {
         id,
@@ -202,6 +202,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
         axios.delete(`${process.env.REACT_APP_API_URL}/post/${id}`, config)
             .then((res) => {
+                const updatedArr = [...posts].filter((e) => ((e.id !== id)));
+                setPosts(updatedArr);
                 setReload(true);
             })
             .catch((err) => {
@@ -227,7 +229,31 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
         }
         axios.post(`${process.env.REACT_APP_API_URL}/share`, {postId: id}, config)
             .then((res) => {
-                setQttAtualRePost(Number(qttAtualRePost)+1);
+                if(res.status === 201){
+                    setQttAtualRePost(Number(qttAtualRePost)+1);
+                    const updatedArr = [{
+                        id,
+                        description,
+                        link,
+                        createdAt,
+                        userName,
+                        userId,
+                        picture,
+                        qtt_likes,
+                        like_users,
+                        linkMetadata,
+                        qtt_comments,
+                        qtt_reposts: Number(qttAtualRePost)+1,
+                        repostUserName: auth?.username,
+                        repostId: res.data.repostId
+                    }, ...posts];
+                    setPosts(updatedArr);
+                }else if(res.status === 200){
+                    setQttAtualRePost(Number(qttAtualRePost)-1);
+                    const updatedArr = [...posts].filter((e) => ((e.id !== id) || (auth?.username !== e.repostUserName)));
+                    setPosts(updatedArr);
+                }
+                setReload(true);
             })
             .catch((err) => {
                 alert(err.message)
@@ -413,7 +439,7 @@ const ContentContainer = styled.div`
         overflow: auto;
     }
 
-    p{
+    >div:nth-child(2){
         font-family: 'Lato', sans-serif;
         font-weight: 400;
         font-size: 20px;

@@ -52,7 +52,7 @@ export default function UserPage() {
             return (
                 <span data-test="message" >Loading</span>
             )
-        } else if (Object.keys(error).length != 0) {
+        } else if (Object.keys(error).length !== 0) {
             if (error.status === 404) {
                 alert('user not found');
                 return (
@@ -95,7 +95,10 @@ export default function UserPage() {
                                 <FollowButton follows={follows} setFollows={setFollows} />
                             </> : error.status === 404 ?
                                 <h1>User NOT Found</h1> :
-                                <h1>Loading...</h1>}
+                                <>
+                                <h1>Loading...</h1>
+                                <FollowButton/> 
+                                </>}
                     </PageTitle>
                     <Wrapper>
                         <ContentContainer>

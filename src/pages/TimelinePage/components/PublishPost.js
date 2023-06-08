@@ -30,6 +30,7 @@ export function PublishPost({reload, setReload, posts, setPosts}) {
         } 
         axios.post(`${process.env.REACT_APP_API_URL}/post`, form, config)
                 .then((res) => {
+                    console.log(res.data)
                     setDisable(false)
                     setForm({link: "", description: ""})
                     setPosts([{...form, id: res.data.id, userName: auth.username, picture: auth.picture, linkMetadata: null}, ...posts]);
@@ -56,7 +57,6 @@ export function PublishPost({reload, setReload, posts, setPosts}) {
                 name="link"
                 value={form.link}
                 disabled={disable}
-                // required
                 onChange={handleChange} />
             <textarea
                 data-test="description"
