@@ -25,12 +25,12 @@ export function Timeline({reload, setReload, posts, setPosts, setLoaded}) {
                     })
                     .catch(resp => {
                         console.error(resp);
+                        setLoading(false);
+                        setError(true);
                     });
                 })
                 .catch(resp => {
                     console.error(resp);
-                    setLoading(false);
-                    setError(true);
                 });
         } else setLoading(false);
         setReload(false)
@@ -57,8 +57,8 @@ export function Timeline({reload, setReload, posts, setPosts, setLoaded}) {
         } else {
             return (
                 <>
-                    {posts.map(e => <Post key={e.id+e.repostUserName} postInfo={e} myUsername={auth?.username} 
-                    setReload={setReload} disable={disable} posts={posts} setPosts={setPosts} />)}
+                    {posts.map(e => <Post key={e.id+e.userName} postInfo={e} myUsername={auth?.username} 
+                    setReload={setReload} disable={disable}/>)}
                 </>
             )
         }

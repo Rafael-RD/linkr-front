@@ -57,7 +57,6 @@ export function PublishPost({reload, setReload, posts, setPosts}) {
                 name="link"
                 value={form.link}
                 disabled={disable}
-                // required
                 onChange={handleChange} />
             <textarea
                 data-test="description"

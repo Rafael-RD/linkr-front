@@ -202,9 +202,7 @@ export function Post({ postInfo, myUsername, setReload, disable, posts, setPosts
         }
         axios.delete(`${process.env.REACT_APP_API_URL}/post/${id}`, config)
             .then((res) => {
-                console.log(posts)
                 const updatedArr = [...posts].filter((e) => ((e.id !== id)));
-                console.log(updatedArr)
                 setPosts(updatedArr);
                 setReload(true);
             })
