@@ -31,8 +31,7 @@ export default function FollowButton({follows, setFollows}) {
         <>
        {   follows === "yourself" ? <></> :       
             <FollowButtons
-             color={follows === "Inserted" ? false : true}
-             backcolor={follows === "Inserted" ? false : true}
+             color={!(follows === "Inserted")}
              data-test="follow-btn" disabled={disable} onClick={follow}>
                 {follows === "Inserted" ? "Unfollow" : "Follow"} 
             </FollowButtons>    
@@ -47,7 +46,7 @@ const FollowButtons = styled.button`
     width: 112px;
     height: 31px;
     border-radius: 5px;
-    background-color: ${(prop) => prop.backcolor? '#1877F2' : 'white'};
+    background-color: ${(prop) => prop.color? '#1877F2' : 'white'};
     font-family: 'Lato', sans-serif;
     font-size: 14px;
     font-weight: 700;
