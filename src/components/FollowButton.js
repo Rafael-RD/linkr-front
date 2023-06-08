@@ -57,6 +57,9 @@ const FollowButtons = styled.button`
     color: white;
     border: none;
     cursor: pointer;
+    @media (max-width: 425px) {
+    margin-right: 30px;
+    }
 `
 const UnfollowButton = styled.button`
     width: 112px;
@@ -70,4 +73,7 @@ const UnfollowButton = styled.button`
     color: #1877F2;
     border: none;
     cursor: pointer;
+    @media (max-width: 425px) {
+    margin-right: 30px;
+    }
 `

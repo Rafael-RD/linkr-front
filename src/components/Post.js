@@ -239,7 +239,7 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
             <ContainerStyle>
             <ReTweetStyle reTweet={repostUserName}>
                 <FaRetweet size={16} />
-                <p>Re-posted by { auth?.username === repostUserName ? "you" : repostUserName}</p>
+                <p>Re-posted by { auth.username === repostUserName ? "you" : repostUserName}</p>
             </ReTweetStyle>
             <PostContainer data-test="post" >
                 <Modal
@@ -282,8 +282,8 @@ export function Post({ postInfo, myUsername, setReload, disable }) {
                         />
                     <AiOutlineComment data-test="comment-btn" onClick={handleCommentsContainer}/>
                     <span data-test="comment-counter">{formatNumber(qtt_comments)} comments</span>
-                    <FaRetweet data-test="repost-btn" size={20} onClick={openModalRePost} />
-                    <span data-test="repost-counter">{formatNumber(qttAtualRePost)} re-post</span>
+                    <FaRetweet size={20} onClick={openModalRePost} />
+                    <span data-test="comment-counter">{formatNumber(qttAtualRePost)} re-post</span>
                 </ImgLike>
                 <ContentContainer edit={editOn}>
                     <NameConfigPost>
