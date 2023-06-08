@@ -29,14 +29,12 @@ export default function FollowButton({follows, setFollows}) {
 
     return(
         <>
-        {   follows === "yourself" ? <></> :            
-            follows === "Inserted" ? 
-            <UnfollowButton data-test="follow-btn" disabled={disable} onClick={follow}>
-                Unfollow
-            </UnfollowButton> : 
-
-            <FollowButtons data-test="follow-btn" disabled={disable} onClick={follow}>
-                Follow
+       {   follows === "yourself" ? <></> :       
+            <FollowButtons
+             color={follows === "Inserted" ? false : true}
+             backcolor={follows === "Inserted" ? false : true}
+             data-test="follow-btn" disabled={disable} onClick={follow}>
+                {follows === "Inserted" ? "Unfollow" : "Follow"} 
             </FollowButtons>    
         }
         
@@ -49,31 +47,12 @@ const FollowButtons = styled.button`
     width: 112px;
     height: 31px;
     border-radius: 5px;
-    background-color: #1877F2;
+    background-color: ${(prop) => prop.backcolor? '#1877F2' : 'white'};
     font-family: 'Lato', sans-serif;
     font-size: 14px;
     font-weight: 700;
     line-height: 17px;
-    color: white;
+    color: ${(prop) => prop.color? 'white' : '#1877F2'};
     border: none;
     cursor: pointer;
-    @media (max-width: 425px) {
-    margin-right: 30px;
-    }
-`
-const UnfollowButton = styled.button`
-    width: 112px;
-    height: 31px;
-    border-radius: 5px;
-    background-color: white;
-    font-family: 'Lato', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    line-height: 17px;
-    color: #1877F2;
-    border: none;
-    cursor: pointer;
-    @media (max-width: 425px) {
-    margin-right: 30px;
-    }
 `
