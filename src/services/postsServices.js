@@ -22,6 +22,25 @@ function listComments(token, postId) {
   return axios.get(`${url}/comments/list/${postId}`, generateHeader(token));
 }
 
-const postsServices = { createNewComment, listComments };
+function getNewPostsCounter(token, lastCreatedAt) {
+  return axios.get(
+    `${url}/list/counter/${lastCreatedAt}`,
+    generateHeader(token)
+  );
+}
+
+function getNewPostsUpdate(token, lastCreatedAt) {
+  return axios.get(
+    `${url}/list/update/${lastCreatedAt}`,
+    generateHeader(token)
+  );
+}
+
+const postsServices = {
+  createNewComment,
+  listComments,
+  getNewPostsCounter,
+  getNewPostsUpdate,
+};
 
 export default postsServices;
