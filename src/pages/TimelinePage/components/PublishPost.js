@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import styled from "styled-components"
 import axios from "axios";
 import AuthContext from "../../../context/auth.context";
@@ -30,7 +30,6 @@ export function PublishPost({reload, setReload, posts, setPosts}) {
         } 
         axios.post(`${process.env.REACT_APP_API_URL}/post`, form, config)
                 .then((res) => {
-                    console.log(res.data)
                     setDisable(false)
                     setForm({link: "", description: ""})
                     setPosts([{...form, id: res.data.id, userName: auth.username, picture: auth.picture, linkMetadata: null}, ...posts]);

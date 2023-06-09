@@ -31,8 +31,3 @@ const Page = styled.div`
   min-height: 100vH;
   background-color: #333333;
 `;
-
-/*
-font-family: 'Lato', sans-serif;
-font-family: 'Oswald', sans-serif;
-*/

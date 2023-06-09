@@ -124,7 +124,6 @@ export default function PostCard({ item, setReload, postList, setPostList }) {
     axios
       .post(`${process.env.REACT_APP_API_URL}/share`, { postId: id }, config)
       .then((res) => {
-        console.log(res);
         setQttAtualRePost(Number(qttAtualRePost) + 1);
       })
       .catch((err) => {
