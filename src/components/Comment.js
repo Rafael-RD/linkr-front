@@ -88,7 +88,6 @@ export default function Comment({ auth, height, setHeight, postId }) {
                     {c.is_author && <span> • post’s author</span>}
                   </div>
                   <HashtagDescription description={c.content} />
-                  {/* <div>{c.content}</div> */}
                 </div>
               </CommentInfo>
             ))}

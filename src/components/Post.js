@@ -14,7 +14,6 @@ import { getMetadata } from "../utils/metadataRequest.js";
 import Comment from "./Comment.js";
 
 export function Post({ postInfo, myUsername, setReload, disable, posts, setPosts }) {
-    /* eslint-disable */
     const {
         id,
         description,
@@ -28,10 +27,9 @@ export function Post({ postInfo, myUsername, setReload, disable, posts, setPosts
         linkMetadata,
         qtt_comments,
         qtt_reposts,
-        repostUserName,
-        repostId
+        repostUserName
     } = postInfo;
-    /* eslint-enable */
+
     const focusEdit = useRef();
     const [editOn, setEditOn] = useState(false);
     const [descriptionEdit, setDescriptionEdit] = useState(description);
