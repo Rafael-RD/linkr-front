@@ -23,7 +23,7 @@ export default function UserPage() {
     useEffect(() => {
         setLoading(true);
         if (auth) {
-
+            setPosts([]);
             axios.get(`${process.env.REACT_APP_API_URL}/getFollow/${params.id}`, { headers: { Authorization: `Bearer ${auth?.token}` } })
                 .then((res) => {
                     if (res.data === "yourself") setFollows("yourself");
@@ -90,8 +90,8 @@ export default function UserPage() {
 
                         {posts.length ?
                             <>
-                                <img src={posts[0].picture} alt="user" />
-                                <h1>{posts[0].userName}</h1>
+                                <img src={posts[0].pageUserInfo?.picture || posts[0]?.picture } alt="user" />
+                                <h1>{posts[0].pageUserInfo?.userName || posts[0]?.userName }</h1>
                                 <FollowButton follows={follows} setFollows={setFollows} />
                             </> : error.status === 404 ?
                                 <h1>User NOT Found</h1> :
